@@ -92,38 +92,40 @@ public class AdminProjectController {
 
     @PostMapping("/save")
     public String save(
-            @ModelAttribute Project project,
+            @jakarta.validation.Valid @ModelAttribute Project project,
             BindingResult bindingResult,
             @RequestParam(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
+            @RequestParam(value = "removeThumbnail", required = false) Boolean removeThumbnail,
             RedirectAttributes ra,
-            Model model) {
+            Model model) throws java.io.IOException {
 
         if (bindingResult.hasErrors()) {
             addCommonAttributes(model);
             model.addAttribute("statuses", Project.ProjectStatus.values());
+            model.addAttribute("errorMessage", "Please fix the highlighted errors and try again.");
             return "admin/projects/form";
         }
 
-        // Handle thumbnail upload
+        Project existingForThumbnail = (project.getId() != null)
+                ? projectService.findById(project.getId()).orElse(null)
+                : null;
+
         if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
-            try {
-                // Delete the old thumbnail from disk when updating an existing project
-                if (project.getId() != null) {
-                    projectService.findById(project.getId()).ifPresent(existing -> {
-                        if (existing.getThumbnail() != null && !existing.getThumbnail().isBlank()) {
-                            fileStorageService.deleteFile(existing.getThumbnail());
-                        }
-                    });
-                }
-                String savedPath = fileStorageService.saveImage(thumbnailFile, "images");
-                project.setThumbnail(savedPath);
-            } catch (Exception e) {
-                addCommonAttributes(model);
-                model.addAttribute("statuses",     Project.ProjectStatus.values());
-                model.addAttribute("errorMessage", "Failed to upload thumbnail: " + e.getMessage());
-                return "admin/projects/form";
+            // New file uploaded: replace whatever thumbnail existed before.
+            if (existingForThumbnail != null && existingForThumbnail.getThumbnail() != null
+                    && !existingForThumbnail.getThumbnail().isBlank()) {
+                fileStorageService.deleteFile(existingForThumbnail.getThumbnail());
             }
+            project.setThumbnail(fileStorageService.saveImage(thumbnailFile, "images"));
+        } else if (Boolean.TRUE.equals(removeThumbnail) && existingForThumbnail != null) {
+            // "Remove current thumbnail" checkbox: clear it out both on disk and in the DB.
+            if (existingForThumbnail.getThumbnail() != null && !existingForThumbnail.getThumbnail().isBlank()) {
+                fileStorageService.deleteFile(existingForThumbnail.getThumbnail());
+            }
+            project.setThumbnail("");
         }
+        // Otherwise leave project.thumbnail as-is (null) so ProjectService.save()
+        // knows to keep the existing value untouched.
 
         projectService.save(project);
         ra.addFlashAttribute("successMessage", "Project saved successfully.");

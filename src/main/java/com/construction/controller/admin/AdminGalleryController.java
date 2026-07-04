@@ -43,6 +43,20 @@ public class AdminGalleryController {
         return "admin/gallery/form";
     }
 
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
+        return galleryService.findById(id)
+                .map(item -> {
+                    addCommonAttributes(model);
+                    model.addAttribute("item", item);
+                    return "admin/gallery/form";
+                })
+                .orElseGet(() -> {
+                    ra.addFlashAttribute("errorMessage", "Gallery item not found.");
+                    return "redirect:/admin/gallery";
+                });
+    }
+
     @PostMapping("/save")
     public String save(@ModelAttribute Gallery item,
                        @RequestParam(required = false) MultipartFile imageFile,

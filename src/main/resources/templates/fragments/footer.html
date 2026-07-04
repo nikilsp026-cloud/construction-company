@@ -2,8 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<footer th:fragment="footer"
-        style="background-color: #1a2332; color: #fff;">
+<footer th:fragment="footer" class="site-footer">
 
   <!-- Main footer grid -->
   <div class="container py-5">
@@ -11,7 +10,7 @@
 
       <!-- Column 1: Company info -->
       <div class="col-12 col-md-4">
-        <h5 class="fw-bold mb-3" style="color: #f7941d;">
+        <h5 class="fw-bold mb-3 text-orange">
           <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">BuildMaster</span>
         </h5>
         <p class="text-white-50 mb-3"
@@ -20,30 +19,29 @@
         </p>
 
         <!-- Address -->
-        <div class="d-flex gap-2 mb-2">
-          <i class="fa-solid fa-location-dot mt-1 flex-shrink-0" style="color: #f7941d;"></i>
-          <span class="text-white-50 small"
-                th:text="${settings != null and settings['contact_address'] != null} ? ${settings['contact_address']} : '123 Builder Ave, Suite 100, New York, NY 10001'">
+        <div class="d-flex gap-2 mb-2" th:if="${settings != null and settings['contact_address'] != null and !settings['contact_address'].isEmpty()}">
+          <i class="fa-solid fa-location-dot mt-1 flex-shrink-0 text-orange"></i>
+          <span class="text-white-50 small" th:text="${settings['contact_address']}">
             123 Builder Ave, Suite 100, New York, NY 10001
           </span>
         </div>
 
         <!-- Phone -->
-        <div class="d-flex gap-2 mb-2">
-          <i class="fa-solid fa-phone mt-1 flex-shrink-0" style="color: #f7941d;"></i>
+        <div class="d-flex gap-2 mb-2" th:if="${settings != null and settings['contact_phone'] != null and !settings['contact_phone'].isEmpty()}">
+          <i class="fa-solid fa-phone mt-1 flex-shrink-0 text-orange"></i>
           <a class="text-white-50 small text-decoration-none"
-             th:href="${settings != null and settings['contact_phone'] != null} ? 'tel:' + ${settings['contact_phone']} : 'tel:+15550000000'"
-             th:text="${settings != null and settings['contact_phone'] != null} ? ${settings['contact_phone']} : '+1 (555) 000-0000'">
+             th:href="'tel:' + ${settings['contact_phone']}"
+             th:text="${settings['contact_phone']}">
             +1 (555) 000-0000
           </a>
         </div>
 
         <!-- Email -->
-        <div class="d-flex gap-2 mb-2">
-          <i class="fa-solid fa-envelope mt-1 flex-shrink-0" style="color: #f7941d;"></i>
+        <div class="d-flex gap-2 mb-2" th:if="${settings != null and settings['contact_email'] != null and !settings['contact_email'].isEmpty()}">
+          <i class="fa-solid fa-envelope mt-1 flex-shrink-0 text-orange"></i>
           <a class="text-white-50 small text-decoration-none"
-             th:href="${settings != null and settings['contact_email'] != null} ? 'mailto:' + ${settings['contact_email']} : 'mailto:info@buildmaster.com'"
-             th:text="${settings != null and settings['contact_email'] != null} ? ${settings['contact_email']} : 'info@buildmaster.com'">
+             th:href="'mailto:' + ${settings['contact_email']}"
+             th:text="${settings['contact_email']}">
             info@buildmaster.com
           </a>
         </div>
@@ -51,46 +49,46 @@
 
       <!-- Column 2: Quick Links -->
       <div class="col-12 col-md-4">
-        <h5 class="fw-bold mb-3" style="color: #f7941d;">Quick Links</h5>
+        <h5 class="fw-bold mb-3 text-orange">Quick Links</h5>
         <ul class="list-unstyled mb-0">
           <li class="mb-2">
             <a href="/" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>Home
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>Home
             </a>
           </li>
           <li class="mb-2">
             <a href="/about" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>About
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>About
             </a>
           </li>
           <li class="mb-2">
             <a href="/services" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>Services
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>Services
             </a>
           </li>
           <li class="mb-2">
             <a href="/projects" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>Projects
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>Projects
             </a>
           </li>
           <li class="mb-2">
             <a href="/gallery" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>Gallery
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>Gallery
             </a>
           </li>
           <li class="mb-2">
             <a href="/blog" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>Blog
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>Blog
             </a>
           </li>
           <li class="mb-2">
             <a href="/contact" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>Contact
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>Contact
             </a>
           </li>
           <li class="mb-2">
             <a href="/quote" class="text-white-50 text-decoration-none small footer-link">
-              <i class="fa-solid fa-angle-right me-1" style="color: #f7941d;"></i>Get a Quote
+              <i class="fa-solid fa-angle-right me-1 text-orange"></i>Get a Quote
             </a>
           </li>
         </ul>
@@ -98,7 +96,7 @@
 
       <!-- Column 3: Social Media -->
       <div class="col-12 col-md-4">
-        <h5 class="fw-bold mb-3" style="color: #f7941d;">Follow Us</h5>
+        <h5 class="fw-bold mb-3 text-orange">Follow Us</h5>
         <p class="text-white-50 small mb-3">
           Stay connected with us on social media for the latest news, project updates, and industry insights.
         </p>
@@ -108,7 +106,6 @@
           <a th:if="${settings != null and settings['facebook_url'] != null}"
              th:href="${settings['facebook_url']}"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08); transition: background-color 0.2s;"
              target="_blank" rel="noopener noreferrer"
              title="Facebook">
             <i class="fa-brands fa-facebook-f"></i>
@@ -116,7 +113,6 @@
           <a th:unless="${settings != null and settings['facebook_url'] != null}"
              href="#"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08);"
              title="Facebook">
             <i class="fa-brands fa-facebook-f"></i>
           </a>
@@ -125,7 +121,6 @@
           <a th:if="${settings != null and settings['linkedin_url'] != null}"
              th:href="${settings['linkedin_url']}"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08); transition: background-color 0.2s;"
              target="_blank" rel="noopener noreferrer"
              title="LinkedIn">
             <i class="fa-brands fa-linkedin-in"></i>
@@ -133,7 +128,6 @@
           <a th:unless="${settings != null and settings['linkedin_url'] != null}"
              href="#"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08);"
              title="LinkedIn">
             <i class="fa-brands fa-linkedin-in"></i>
           </a>
@@ -142,7 +136,6 @@
           <a th:if="${settings != null and settings['twitter_url'] != null}"
              th:href="${settings['twitter_url']}"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08); transition: background-color 0.2s;"
              target="_blank" rel="noopener noreferrer"
              title="Twitter / X">
             <i class="fa-brands fa-x-twitter"></i>
@@ -150,7 +143,6 @@
           <a th:unless="${settings != null and settings['twitter_url'] != null}"
              href="#"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08);"
              title="Twitter / X">
             <i class="fa-brands fa-x-twitter"></i>
           </a>
@@ -159,7 +151,6 @@
           <a th:if="${settings != null and settings['instagram_url'] != null}"
              th:href="${settings['instagram_url']}"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08); transition: background-color 0.2s;"
              target="_blank" rel="noopener noreferrer"
              title="Instagram">
             <i class="fa-brands fa-instagram"></i>
@@ -167,7 +158,6 @@
           <a th:unless="${settings != null and settings['instagram_url'] != null}"
              href="#"
              class="social-icon d-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none"
-             style="width:42px; height:42px; background-color: rgba(255,255,255,0.08);"
              title="Instagram">
             <i class="fa-brands fa-instagram"></i>
           </a>
@@ -179,7 +169,7 @@
   </div><!-- /.container main footer -->
 
   <!-- Bottom copyright bar -->
-  <div style="background-color: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.07);">
+  <div class="footer-bottom">
     <div class="container py-3 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2">
       <p class="mb-0 small text-white-50">
         &copy; 2025
@@ -187,22 +177,17 @@
         All rights reserved.
       </p>
       <p class="mb-0 small text-white-50">
-        Crafted with <span style="color: #f7941d;">&#9829;</span> for excellence in construction.
+        Crafted with <span class="text-orange">&#9829;</span> for excellence in construction.
       </p>
     </div>
   </div>
 
-  <!-- Hover effect for social icons via inline style tag -->
-  <style>
-    .social-icon:hover {
-      background-color: #f7941d !important;
-    }
-    .footer-link:hover {
-      color: #f7941d !important;
-    }
-  </style>
 
 </footer>
+
+<button type="button" class="back-to-top" aria-label="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
 
 </body>
 </html>

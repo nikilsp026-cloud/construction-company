@@ -5,6 +5,7 @@ import com.construction.entity.*;
 import com.construction.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,10 +18,32 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Seeds essential data (roles, the default admin user) and, on the very first
+ * boot only, a set of demo/sample content (services, projects, testimonials,
+ * team members, settings) so the site isn't empty out of the box.
+ * <p>
+ * IMPORTANT - why this class used to "resurrect" deleted records:
+ * the previous implementation guarded each seed method with
+ * {@code repository.count() > 0}. That means if an admin deleted *every*
+ * row of a table (e.g. all projects), the count would drop back to zero and
+ * the demo rows would be silently re-inserted on the next restart, making it
+ * look like deletes "didn't stick" in the Neon database.
+ * <p>
+ * The fix: demo-content seeding now runs at most ONCE per environment,
+ * tracked by a persistent flag ({@code system.demo_data_seeded}) stored in
+ * the {@code website_settings} table. Once that flag is set, this class will
+ * never re-insert demo services/projects/testimonials/team members again -
+ * regardless of how many rows the admin subsequently deletes. Seeding can
+ * also be disabled entirely (e.g. for a fresh production deployment that
+ * should start empty) via {@code app.data.seed-demo-content=false}.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements ApplicationRunner {
+
+    private static final String SEED_FLAG_KEY = "system.demo_data_seeded";
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
@@ -32,15 +55,42 @@ public class DataLoader implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
     private final AppProperties appProperties;
 
+    /** Master switch for demo/sample content. Always leave essential seeding (roles/admin) on. */
+    @Value("${app.data.seed-demo-content:true}")
+    private boolean seedDemoContent;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        // Always ensure roles + the admin account exist - these are required for the
+        // app to be usable at all, and are individually idempotent (checked by unique key).
         seedRoles();
         seedAdminUser();
+
+        if (!seedDemoContent) {
+            log.info("Demo content seeding disabled (app.data.seed-demo-content=false).");
+            return;
+        }
+
+        if (websiteSettingRepository.existsBySettingKey(SEED_FLAG_KEY)) {
+            log.info("Demo content already seeded previously; skipping (admin deletions will not be reverted).");
+            return;
+        }
+
         seedServices();
         seedProjects();
         seedTestimonials();
         seedTeamMembers();
         seedWebsiteSettings();
+        markDemoDataSeeded();
+    }
+
+    private void markDemoDataSeeded() {
+        WebsiteSetting flag = new WebsiteSetting();
+        flag.setSettingKey(SEED_FLAG_KEY);
+        flag.setSettingValue("true");
+        flag.setSettingType("boolean");
+        websiteSettingRepository.save(flag);
+        log.info("Demo content seed completed and flagged; will not run again.");
     }
 
     // -------------------------------------------------------------------------
@@ -149,7 +199,7 @@ public class DataLoader implements ApplicationRunner {
         p1.setStartDate(LocalDate.of(2021, 3, 1));
         p1.setCompletionDate(LocalDate.of(2023, 11, 30));
         p1.setStatus(Project.ProjectStatus.COMPLETED);
-        p1.setBudget(new BigDecimal("42500000.00"));
+        p1.setBudget(new BigDecimal("3400000000.00"));
         p1.setCategory("Commercial");
         p1.setFeatured(true);
         p1.setCompletionPercentage(100);
@@ -165,7 +215,7 @@ public class DataLoader implements ApplicationRunner {
         p2.setStartDate(LocalDate.of(2023, 6, 15));
         p2.setCompletionDate(LocalDate.of(2025, 12, 31));
         p2.setStatus(Project.ProjectStatus.ONGOING);
-        p2.setBudget(new BigDecimal("18750000.00"));
+        p2.setBudget(new BigDecimal("1500000000.00"));
         p2.setCategory("Residential");
         p2.setFeatured(true);
         p2.setCompletionPercentage(65);
@@ -181,7 +231,7 @@ public class DataLoader implements ApplicationRunner {
         p3.setStartDate(LocalDate.of(2022, 1, 10));
         p3.setCompletionDate(LocalDate.of(2024, 4, 30));
         p3.setStatus(Project.ProjectStatus.COMPLETED);
-        p3.setBudget(new BigDecimal("9300000.00"));
+        p3.setBudget(new BigDecimal("744000000.00"));
         p3.setCategory("Infrastructure");
         p3.setFeatured(false);
         p3.setCompletionPercentage(100);
@@ -197,7 +247,7 @@ public class DataLoader implements ApplicationRunner {
         p4.setStartDate(LocalDate.of(2025, 9, 1));
         p4.setCompletionDate(LocalDate.of(2027, 6, 30));
         p4.setStatus(Project.ProjectStatus.UPCOMING);
-        p4.setBudget(new BigDecimal("55000000.00"));
+        p4.setBudget(new BigDecimal("4400000000.00"));
         p4.setCategory("Commercial");
         p4.setFeatured(true);
         p4.setCompletionPercentage(0);
@@ -297,10 +347,6 @@ public class DataLoader implements ApplicationRunner {
     // 7. Website Settings
     // -------------------------------------------------------------------------
     private void seedWebsiteSettings() {
-        if (websiteSettingRepository.count() > 0) {
-            return;
-        }
-
         List<String[]> settings = List.of(
                 new String[]{"site_name",        "KV Construction",                                                        "text"},
                 new String[]{"site_tagline",      "Building Dreams, Delivering Excellence",                                          "text"},

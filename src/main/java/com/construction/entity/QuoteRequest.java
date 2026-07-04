@@ -33,7 +33,7 @@ public class QuoteRequest {
     @Column(length = 300)
     private String location;
 
-    /** Budget range, e.g. "$50,000 - $100,000" */
+    /** Budget range, e.g. "₹10,00,000 - ₹25,00,000" (Indian Rupees) */
     @Column(length = 100)
     private String budget;
 

@@ -14,144 +14,19 @@
   <!-- Font Awesome 6 CDN -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous"
         referrerpolicy="no-referrer" />
 
-  <style>
-    body {
-      background-color: #f8f9fa;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    main { flex: 1; }
-
-    /* ---- Hero ---- */
-    .page-hero {
-      background-color: #1a2332;
-      padding: 5rem 0 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .page-hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    .hero-accent-line {
-      width: 60px;
-      height: 4px;
-      background-color: #f7941d;
-      border-radius: 2px;
-      margin: 0 auto 1.5rem;
-    }
-
-    /* ---- Filter Bar ---- */
-    .filter-bar {
-      background-color: #fff;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    }
-
-    .filter-bar .form-select:focus,
-    .filter-bar .form-control:focus {
-      border-color: #f7941d;
-      box-shadow: 0 0 0 0.2rem rgba(247, 148, 29, 0.2);
-    }
-
-    /* ---- Project Cards ---- */
-    .project-card {
-      border: none;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      height: 100%;
-    }
-
-    .project-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.13);
-    }
-
-    .project-thumbnail {
-      width: 100%;
-      height: 210px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .project-thumbnail-placeholder {
-      width: 100%;
-      height: 210px;
-      background-color: #1a2332;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255, 255, 255, 0.2);
-      font-size: 3rem;
-    }
-
-    .btn-orange {
-      background-color: #f7941d;
-      border-color: #f7941d;
-      color: #fff;
-      font-weight: 600;
-      transition: background-color 0.2s, border-color 0.2s;
-    }
-
-    .btn-orange:hover,
-    .btn-orange:focus {
-      background-color: #d97b0e;
-      border-color: #d97b0e;
-      color: #fff;
-    }
-
-    /* ---- Status badge colors ---- */
-    .badge-ongoing    { background-color: #0d6efd; color: #fff; }
-    .badge-completed  { background-color: #198754; color: #fff; }
-    .badge-upcoming   { background-color: #0dcaf0; color: #000; }
-    .badge-on-hold    { background-color: #ffc107; color: #000; }
-    .badge-default    { background-color: #6c757d; color: #fff; }
-
-    /* ---- Pagination ---- */
-    .page-link {
-      color: #1a2332;
-      border-color: #dee2e6;
-    }
-
-    .page-link:hover {
-      color: #f7941d;
-      border-color: #f7941d;
-      background-color: #fff8f1;
-    }
-
-    .page-item.active .page-link {
-      background-color: #f7941d;
-      border-color: #f7941d;
-      color: #fff;
-    }
-
-    .page-item.disabled .page-link {
-      color: #adb5bd;
-    }
-
-    .section-title-line {
-      width: 50px;
-      height: 3px;
-      background-color: #f7941d;
-      border-radius: 2px;
-      margin-bottom: 1rem;
-    }
-  </style>
+    <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Shared design system -->
+  <link rel="stylesheet" href="/css/main.css"/>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
   <!-- ===== NAVBAR ===== -->
   <div th:replace="~{fragments/navbar :: navbar}" th:with="activePage='projects'"></div>
@@ -425,8 +300,9 @@
 
   <!-- Bootstrap 5.3 JS bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmJ7ZhqIR2CuKKuKVD9ROdBGSQ4"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
           crossorigin="anonymous"></script>
 
+  <script src="/js/main.js"></script>
 </body>
 </html>

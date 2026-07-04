@@ -36,6 +36,14 @@ COPY --from=build --chown=spring:spring /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Koyeb sets SPRING_PROFILES_ACTIVE=prod via environment variable
+#
+# NOTE ON FILE UPLOADS: the /app/uploads directory below lives on the
+# container's local, ephemeral filesystem. On most PaaS platforms (Koyeb
+# included) this is wiped on every redeploy/restart/scale event, so uploaded
+# images and documents will be lost. For production, mount a persistent
+# volume at /app/uploads or switch FileStorageService to an object store
+# (e.g. S3-compatible storage) - see the accompanying report for details.
 ENTRYPOINT ["java", \
+            "-XX:MaxRAMPercentage=75.0", \
             "-Djava.security.egd=file:/dev/./urandom", \
             "-jar", "app.jar"]

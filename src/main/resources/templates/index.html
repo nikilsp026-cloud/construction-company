@@ -13,194 +13,15 @@
   <!-- Font Awesome 6 -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous"
         referrerpolicy="no-referrer"/>
-
-  <style>
-    :root {
-      --navy: #1a2332;
-      --orange: #f7941d;
-    }
-
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      color: #333;
-    }
-
-    /* Hero */
-    .hero-section {
-      background: linear-gradient(135deg, #1a2332 0%, #243447 60%, #1a2332 100%);
-      min-height: 92vh;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><path d="M0 0h60v60H0z" fill="none"/><path d="M30 0v60M0 30h60" stroke="rgba(247,148,29,0.06)" stroke-width="1"/></svg>') repeat;
-    }
-    .hero-section .container { position: relative; z-index: 1; }
-
-    /* Stats bar */
-    .stats-bar {
-      background-color: var(--navy);
-    }
-    .stat-number {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--orange);
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.7);
-      letter-spacing: .04em;
-    }
-
-    /* Section headings */
-    .section-title {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--navy);
-    }
-    .section-subtitle {
-      color: #6c757d;
-      max-width: 560px;
-      margin: 0 auto;
-    }
-    .section-divider {
-      width: 56px;
-      height: 4px;
-      background: var(--orange);
-      border-radius: 2px;
-      margin: .75rem auto 1.5rem;
-    }
-
-    /* Service cards */
-    .service-card {
-      border: none;
-      border-radius: 12px;
-      transition: transform .25s ease, box-shadow .25s ease;
-      height: 100%;
-    }
-    .service-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 40px rgba(26,35,50,.14) !important;
-    }
-    .service-icon-wrap {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(247,148,29,.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      color: var(--orange);
-      flex-shrink: 0;
-    }
-
-    /* Project cards */
-    .project-card {
-      border: none;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform .25s ease, box-shadow .25s ease;
-      height: 100%;
-    }
-    .project-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 40px rgba(26,35,50,.16) !important;
-    }
-    .project-card img {
-      height: 220px;
-      object-fit: cover;
-      width: 100%;
-    }
-    .project-card .card-body { display: flex; flex-direction: column; }
-    .project-card .card-body .mt-auto { margin-top: auto !important; }
-
-    /* Testimonial cards */
-    .testimonial-card {
-      border: none;
-      border-radius: 12px;
-      height: 100%;
-    }
-    .testimonial-quote {
-      font-size: 2.5rem;
-      color: var(--orange);
-      line-height: 1;
-    }
-    .star { color: #ffc107; }
-    .star-empty { color: #dee2e6; }
-
-    /* Team cards */
-    .team-card {
-      border: none;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform .25s ease, box-shadow .25s ease;
-      height: 100%;
-    }
-    .team-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 40px rgba(26,35,50,.14) !important;
-    }
-    .team-card img {
-      height: 240px;
-      object-fit: cover;
-      object-position: top;
-      width: 100%;
-    }
-    .team-social a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(26,35,50,.08);
-      color: var(--navy);
-      font-size: .85rem;
-      text-decoration: none;
-      transition: background .2s, color .2s;
-    }
-    .team-social a:hover {
-      background: var(--orange);
-      color: #fff;
-    }
-
-    /* CTA section */
-    .cta-section {
-      background: linear-gradient(135deg, #1a2332 0%, #243447 100%);
-    }
-
-    /* Buttons */
-    .btn-orange {
-      background-color: var(--orange);
-      border-color: var(--orange);
-      color: #fff;
-      font-weight: 600;
-    }
-    .btn-orange:hover {
-      background-color: #e6840f;
-      border-color: #e6840f;
-      color: #fff;
-    }
-    .btn-outline-light:hover {
-      color: var(--navy) !important;
-    }
-
-    /* Status badges */
-    .badge-ongoing   { background-color: #0d6efd22; color: #0d6efd; border: 1px solid #0d6efd55; }
-    .badge-completed { background-color: #19875422; color: #198754; border: 1px solid #19875455; }
-    .badge-upcoming  { background-color: #ffc10722; color: #856404;  border: 1px solid #ffc10755; }
-    .badge-on-hold   { background-color: #6c757d22; color: #6c757d; border: 1px solid #6c757d55; }
-  </style>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Shared design system -->
+  <link rel="stylesheet" href="/css/main.css"/>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -280,7 +101,7 @@
     <div class="container">
 
       <!-- Heading -->
-      <div class="text-center mb-5">
+      <div class="text-center mb-5 reveal">
         <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">What We Do</p>
         <h2 class="section-title">Our Services</h2>
         <div class="section-divider"></div>
@@ -299,7 +120,7 @@
       <div th:if="${services != null and !services.isEmpty()}"
            class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-        <div class="col" th:each="service : ${services}">
+        <div class="col reveal" th:each="service : ${services}">
           <div class="card service-card shadow-sm p-4">
             <div class="d-flex align-items-start gap-3 mb-3">
               <div class="service-icon-wrap">
@@ -335,7 +156,7 @@
     <div class="container">
 
       <!-- Heading -->
-      <div class="text-center mb-5">
+      <div class="text-center mb-5 reveal">
         <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">Our Work</p>
         <h2 class="section-title">Featured Projects</h2>
         <div class="section-divider"></div>
@@ -354,7 +175,7 @@
       <div th:if="${featuredProjects != null and !featuredProjects.isEmpty()}"
            class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-        <div class="col" th:each="project : ${featuredProjects}">
+        <div class="col reveal" th:each="project : ${featuredProjects}">
           <div class="card project-card shadow-sm">
 
             <!-- Thumbnail -->
@@ -419,7 +240,7 @@
     <div class="container">
 
       <!-- Heading -->
-      <div class="text-center mb-5">
+      <div class="text-center mb-5 reveal">
         <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">Client Feedback</p>
         <h2 class="section-title">What Our Clients Say</h2>
         <div class="section-divider"></div>
@@ -438,7 +259,7 @@
       <div th:if="${testimonials != null and !testimonials.isEmpty()}"
            class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-        <div class="col" th:each="testimonial : ${testimonials}">
+        <div class="col reveal" th:each="testimonial : ${testimonials}">
           <div class="card testimonial-card shadow-sm p-4">
 
             <!-- Quote icon -->
@@ -491,7 +312,7 @@
     <div class="container">
 
       <!-- Heading -->
-      <div class="text-center mb-5">
+      <div class="text-center mb-5 reveal">
         <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">The People Behind The Work</p>
         <h2 class="section-title">Meet Our Team</h2>
         <div class="section-divider"></div>
@@ -510,7 +331,7 @@
       <div th:if="${team != null and !team.isEmpty()}"
            class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
-        <div class="col" th:each="member : ${team}">
+        <div class="col reveal" th:each="member : ${team}">
           <div class="card team-card shadow-sm text-center">
 
             <!-- Photo -->
@@ -591,7 +412,8 @@
 
   <!-- Bootstrap 5.3 JS bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmMIcWVlvIEbKE5p14rrNVVhFKr1"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
           crossorigin="anonymous"></script>
+  <script src="/js/main.js"></script>
 </body>
 </html>

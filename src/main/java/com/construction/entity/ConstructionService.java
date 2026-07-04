@@ -55,4 +55,13 @@ public class ConstructionService {
     public enum ServiceStatus {
         ACTIVE, INACTIVE
     }
+
+    /**
+     * Alias for {@link #image}. admin/services/form.html references
+     * "imageUrl" - kept as a read-only convenience getter so the template
+     * doesn't fail with a PropertyNotFoundException.
+     */
+    public String getImageUrl() {
+        return image;
+    }
 }

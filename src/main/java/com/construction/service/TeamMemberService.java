@@ -33,6 +33,10 @@ public class TeamMemberService {
     }
 
     public TeamMember save(TeamMember m) {
+        if (m.getId() != null && m.getPhoto() == null) {
+            teamMemberRepository.findById(m.getId())
+                    .ifPresent(existing -> m.setPhoto(existing.getPhoto()));
+        }
         return teamMemberRepository.save(m);
     }
 

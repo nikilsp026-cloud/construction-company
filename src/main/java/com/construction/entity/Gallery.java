@@ -37,4 +37,14 @@ public class Gallery {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    /**
+     * Alias for {@link #imagePath}. Several templates reference "imageUrl" -
+     * kept as a read-only convenience getter so those templates don't fail
+     * with a PropertyNotFoundException, without renaming the underlying
+     * (already-migrated) database column.
+     */
+    public String getImageUrl() {
+        return imagePath;
+    }
 }

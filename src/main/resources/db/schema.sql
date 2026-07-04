@@ -1,7 +1,16 @@
 -- =========================================================
--- Construction Company Management System - MySQL Schema
--- Reference only: Hibernate auto-generates this via ddl-auto=update
--- Run manually only if you want a clean start (truncate or recreate)
+-- Construction Company Management System - Schema Reference
+--
+-- NOT EXECUTED BY THE APPLICATION. Hibernate creates/updates the real
+-- schema automatically via spring.jpa.hibernate.ddl-auto=update against
+-- Neon PostgreSQL (every environment — see application-dev.properties /
+-- application-prod.properties).
+--
+-- This file is written in MySQL syntax purely as a human-readable reference
+-- for the table/column layout and is NOT valid to run as-is against the
+-- Postgres database this app actually uses (enum syntax, AUTO_INCREMENT,
+-- CHARACTER SET, etc. all differ). Keep it in sync manually if you change
+-- entity fields; don't attempt to execute it directly.
 -- =========================================================
 
 CREATE DATABASE IF NOT EXISTS construction_db

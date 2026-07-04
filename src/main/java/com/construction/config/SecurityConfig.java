@@ -1,6 +1,7 @@
 package com.construction.config;
 
 import com.construction.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,12 +10,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+
+    /**
+     * Secret used to sign remember-me tokens. Must be set via the
+     * APP_REMEMBER_ME_KEY environment variable in production - never
+     * hardcode secrets in source control.
+     */
+    @Value("${app.security.remember-me-key}")
+    private String rememberMeKey;
 
     public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
@@ -28,16 +38,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            )
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**", "/webjars/**").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/admin/dashboard", true)
+                .failureUrl("/login?error")
                 .permitAll()
             )
             .logout(logout -> logout
@@ -46,7 +60,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .rememberMe(remember -> remember
-                .key("bm-construction-secret-key-2024")
+                .key(rememberMeKey)
             )
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())

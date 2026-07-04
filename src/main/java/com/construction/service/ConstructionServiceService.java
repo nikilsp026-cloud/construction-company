@@ -33,6 +33,10 @@ public class ConstructionServiceService {
     }
 
     public ConstructionService save(ConstructionService s) {
+        if (s.getId() != null && s.getImage() == null) {
+            constructionServiceRepository.findById(s.getId())
+                    .ifPresent(existing -> s.setImage(existing.getImage()));
+        }
         return constructionServiceRepository.save(s);
     }
 

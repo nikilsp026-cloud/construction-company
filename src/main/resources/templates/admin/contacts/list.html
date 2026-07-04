@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Admin: Contact Messages' : 'Admin: Contact Messages'">Admin: Contact Messages</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --navy:  #1a2332;
+      --orange: #f7941d;
+    }
+
+    body { background-color: #f4f6f9; }
+
+    .admin-sidebar .nav-link:hover,
+    .admin-sidebar .nav-link.active {
+      background-color: rgba(247, 148, 29, 0.18) !important;
+      color: var(--orange) !important;
+    }
+
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+
+    .admin-card .card-header {
+      background: transparent;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.25rem;
+    }
+
+    .table th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .table td { vertical-align: middle; }
+
+    .btn-orange {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .btn-orange:hover {
+      background-color: #e0831a;
+      border-color: #e0831a;
+      color: #fff;
+    }
+
+    .btn-action {
+      padding: 0.25rem 0.55rem;
+      font-size: 0.8rem;
+    }
+
+    /* Unread row highlight */
+    tr.row-unread td:first-child {
+      border-left: 3px solid #dc3545;
+    }
+
+    /* Filter tabs */
+    .filter-tab {
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.35rem 0.9rem;
+      text-decoration: none;
+      color: #64748b;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+    .filter-tab:hover {
+      color: var(--navy);
+      background-color: #e9ecef;
+    }
+    .filter-tab.active-tab {
+      background-color: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+  </style>
+</head>
+<body>
+
+<div class="d-flex" style="min-height:100vh;">
+
+  <!-- ========== SIDEBAR ========== -->
+  <div class="admin-sidebar" th:replace="~{fragments/admin-sidebar :: adminSidebar}"></div>
+
+  <!-- ========== MAIN WRAPPER ========== -->
+  <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+
+    <!-- TOP BAR -->
+    <div th:replace="~{fragments/admin-topbar :: adminTopbar('Contact Messages')}"></div>
+
+    <!-- ========== PAGE CONTENT ========== -->
+    <main class="flex-grow-1 p-4" style="overflow-y:auto;">
+
+      <!-- Page heading -->
+      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <div>
+          <h4 class="fw-bold mb-0" style="color: var(--navy);">
+            <i class="fa-solid fa-envelope me-2" style="color: var(--orange);"></i>Contact Messages
+          </h4>
+          <p class="text-muted small mb-0">View and manage incoming contact form submissions</p>
+        </div>
+        <!-- Unread badge summary -->
+        <div th:if="${unreadCount != null and unreadCount > 0}"
+             class="d-flex align-items-center gap-2">
+          <span class="badge rounded-pill"
+                style="background:#dc3545; font-size:0.82rem; padding:0.4em 0.75em;">
+            <i class="fa-solid fa-bell me-1"></i>
+            <span th:text="${unreadCount}">0</span> unread
+          </span>
+        </div>
+      </div>
+
+      <!-- Flash messages -->
+      <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Filter tabs + count -->
+      <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <div class="d-flex gap-2">
+          <a href="/admin/contacts"
+             th:classappend="${filter == null or filter == 'all'} ? ' active-tab' : ''"
+             class="filter-tab">
+            <i class="fa-solid fa-inbox me-1"></i>All Messages
+          </a>
+          <a href="/admin/contacts?filter=unread"
+             th:classappend="${filter == 'unread'} ? ' active-tab' : ''"
+             class="filter-tab">
+            <i class="fa-solid fa-envelope me-1"></i>Unread
+            <span th:if="${unreadCount != null and unreadCount > 0}"
+                  th:text="${unreadCount}"
+                  class="badge rounded-pill ms-1"
+                  style="background:#dc3545; font-size:0.68rem;"></span>
+          </a>
+        </div>
+        <small class="text-muted" th:if="${messages != null}">
+          <span th:text="${messages.totalElements}">0</span> message(s) total
+        </small>
+      </div>
+
+      <!-- Messages table card -->
+      <div class="admin-card">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width:20%;">Name</th>
+                <th style="width:22%;">Email</th>
+                <th style="width:30%;">Subject</th>
+                <th style="width:10%;" class="text-center">Status</th>
+                <th style="width:12%;">Received</th>
+                <th style="width:6%;" class="text-end pe-3">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Empty state -->
+              <tr th:if="${messages == null or messages.isEmpty()}">
+                <td colspan="6" class="text-center py-5 text-muted">
+                  <i class="fa-solid fa-inbox fa-2x mb-2 d-block" style="color: #cbd5e1;"></i>
+                  No messages found.
+                </td>
+              </tr>
+
+              <!-- Message rows -->
+              <tr th:each="msg : ${messages}"
+                  th:class="${msg.read == null or !msg.read} ? 'row-unread' : ''">
+
+                <!-- Name -->
+                <td>
+                  <div class="fw-semibold" style="color:#1a2332;" th:text="${msg.name}">John Doe</div>
+                </td>
+
+                <!-- Email -->
+                <td>
+                  <a th:href="${'mailto:' + msg.email}"
+                     class="text-decoration-none small"
+                     style="color:#0d6efd;"
+                     th:text="${msg.email}">john@example.com</a>
+                </td>
+
+                <!-- Subject -->
+                <td>
+                  <span class="text-truncate d-block" style="max-width:260px;"
+                        th:text="${msg.subject != null ? msg.subject : '(no subject)'}">
+                    Subject here
+                  </span>
+                </td>
+
+                <!-- Read / Unread badge -->
+                <td class="text-center">
+                  <span th:if="${msg.read == null or !msg.read}"
+                        class="badge rounded-pill"
+                        style="background:#dc3545; font-size:0.72rem; padding:0.3em 0.65em;">
+                    Unread
+                  </span>
+                  <span th:if="${msg.read != null and msg.read}"
+                        class="badge rounded-pill bg-secondary"
+                        style="font-size:0.72rem; padding:0.3em 0.65em;">
+                    Read
+                  </span>
+                </td>
+
+                <!-- Created At -->
+                <td>
+                  <span class="text-muted small"
+                        th:text="${msg.createdAt != null} ? ${#temporals.format(msg.createdAt, 'dd MMM yyyy')} : '—'">
+                    01 Jan 2025
+                  </span>
+                </td>
+
+                <!-- View link -->
+                <td class="text-end pe-3">
+                  <a th:href="@{/admin/contacts/{id}(id=${msg.id})}"
+                     class="btn btn-sm btn-outline-primary btn-action"
+                     title="View message">
+                    <i class="fa-solid fa-eye"></i>
+                  </a>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /table-responsive -->
+
+        <!-- Pagination -->
+        <div class="card-footer bg-transparent border-top d-flex align-items-center justify-content-between flex-wrap gap-2 py-2 px-3"
+             th:if="${messages != null and messages.totalPages > 1}">
+          <small class="text-muted">
+            Page <span th:text="${messages.number + 1}">1</span> of
+            <span th:text="${messages.totalPages}">1</span>
+          </small>
+          <nav aria-label="Messages pagination">
+            <ul class="pagination pagination-sm mb-0">
+
+              <!-- Previous -->
+              <li class="page-item" th:classappend="${messages.first} ? 'disabled' : ''">
+                <a class="page-link"
+                   th:href="@{/admin/contacts(page=${messages.number - 1}, filter=${filter})}"
+                   aria-label="Previous">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </a>
+              </li>
+
+              <!-- Page numbers -->
+              <li class="page-item"
+                  th:each="i : ${#numbers.sequence(0, messages.totalPages - 1)}"
+                  th:classappend="${i == messages.number} ? 'active' : ''">
+                <a class="page-link"
+                   th:href="@{/admin/contacts(page=${i}, filter=${filter})}"
+                   th:text="${i + 1}">1</a>
+              </li>
+
+              <!-- Next -->
+              <li class="page-item" th:classappend="${messages.last} ? 'disabled' : ''">
+                <a class="page-link"
+                   th:href="@{/admin/contacts(page=${messages.number + 1}, filter=${filter})}"
+                   aria-label="Next">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+        </div><!-- /pagination -->
+
+      </div><!-- /admin-card -->
+
+    </main><!-- /main -->
+
+  </div><!-- /main wrapper -->
+
+</div><!-- /d-flex root -->
+
+<!-- Bootstrap 5.3 JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmQJf2EgANH10BAbfKN3oeZ+s8"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

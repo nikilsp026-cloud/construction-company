@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Blog' : 'BuildMaster — Blog'">BuildMaster — Blog</title>
+
+  <!-- Bootstrap 5.3 -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous"/>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"/>
+
+  <style>
+    :root {
+      --navy:  #1a2332;
+      --orange: #f7941d;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #333;
+      background-color: #f8f9fa;
+    }
+
+    /* ---- Page hero ---- */
+    .page-hero {
+      background: linear-gradient(rgba(26, 35, 50, 0.82), rgba(26, 35, 50, 0.82)),
+                  url('/images/blog-hero.jpg') center / cover no-repeat;
+      padding: 100px 0 65px;
+      color: #fff;
+    }
+    .page-hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+    }
+    .page-hero .breadcrumb-item + .breadcrumb-item::before {
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .page-hero .breadcrumb-item a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+    .page-hero .breadcrumb-item.active {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* ---- Section label / divider ---- */
+    .section-label {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      color: var(--orange);
+      text-transform: uppercase;
+    }
+
+    /* ---- Blog card (horizontal) ---- */
+    .blog-card {
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow .25s ease, transform .25s ease;
+      background: #fff;
+    }
+    .blog-card:hover {
+      box-shadow: 0 12px 36px rgba(26, 35, 50, .13) !important;
+      transform: translateY(-3px);
+    }
+    .blog-card .blog-thumbnail {
+      width: 220px;
+      min-width: 180px;
+      max-width: 220px;
+      flex-shrink: 0;
+    }
+    .blog-card .blog-thumbnail img {
+      width: 100%;
+      height: 100%;
+      min-height: 175px;
+      object-fit: cover;
+      display: block;
+    }
+    .blog-card .card-body {
+      display: flex;
+      flex-direction: column;
+    }
+    .blog-card .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+    }
+    .blog-card .card-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .blog-card .card-title a:hover {
+      color: var(--orange);
+    }
+    .blog-card .short-desc {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      color: #6c757d;
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+    .blog-meta span {
+      font-size: .78rem;
+      color: #868e96;
+    }
+    .blog-meta .meta-sep {
+      margin: 0 6px;
+      color: #dee2e6;
+    }
+
+    /* ---- Search form inline ---- */
+    .search-bar .form-control {
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+    }
+    .search-bar .btn-search {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+      border-radius: 0 8px 8px 0;
+    }
+    .search-bar .btn-search:hover {
+      background-color: #e6840f;
+      border-color: #e6840f;
+    }
+
+    /* ---- Buttons ---- */
+    .btn-orange {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-orange:hover {
+      background-color: #e6840f;
+      border-color: #e6840f;
+      color: #fff;
+    }
+    .btn-read-more {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--orange);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: gap .2s;
+    }
+    .btn-read-more:hover {
+      color: #e6840f;
+      gap: 9px;
+    }
+
+    /* ---- Pagination ---- */
+    .page-link {
+      color: var(--navy);
+      border-radius: 6px !important;
+      margin: 0 2px;
+    }
+    .page-link:hover {
+      color: var(--orange);
+      border-color: var(--orange);
+    }
+    .page-item.active .page-link {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .page-item.disabled .page-link {
+      color: #adb5bd;
+    }
+
+    /* ---- Sidebar ---- */
+    .sidebar-card {
+      border: none;
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .sidebar-card .sidebar-heading {
+      background: var(--navy);
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 14px 18px;
+      border-radius: 12px 12px 0 0;
+      border-left: 4px solid var(--orange);
+    }
+    .sidebar-search .form-control {
+      border-right: none;
+      font-size: .88rem;
+    }
+    .sidebar-search .btn {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .sidebar-search .btn:hover {
+      background: #e6840f;
+      border-color: #e6840f;
+    }
+
+    /* Recent posts in sidebar */
+    .recent-post-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      text-decoration: none;
+    }
+    .recent-post-item:last-child {
+      border-bottom: none;
+    }
+    .recent-post-item img {
+      width: 64px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .recent-post-item .rp-placeholder {
+      width: 64px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--navy), #243447);
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .recent-post-item .rp-title {
+      font-size: .83rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+    .recent-post-item:hover .rp-title {
+      color: var(--orange);
+    }
+    .recent-post-item .rp-date {
+      font-size: .73rem;
+      color: #868e96;
+      margin-top: 3px;
+    }
+
+    /* Active keyword highlight badge */
+    .active-filter-bar {
+      background: rgba(247, 148, 29, .1);
+      border: 1px solid rgba(247, 148, 29, .3);
+      border-radius: 8px;
+      padding: 10px 16px;
+    }
+
+    @media (max-width: 575.98px) {
+      .blog-card .blog-thumbnail {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Navbar fragment -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- ==================== PAGE HERO ==================== -->
+  <section class="page-hero text-center">
+    <div class="container">
+      <p class="section-label">
+        <i class="fa-solid fa-pen-nib me-1"></i>Insights &amp; Updates
+      </p>
+      <h1 class="mb-3">Our Blog</h1>
+      <p class="mb-4 fs-5" style="color: rgba(255,255,255,.70);">
+        Industry news, construction tips, and company updates.
+      </p>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb justify-content-center mb-0">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Blog</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <section style="padding-top: 4rem; padding-bottom: 5rem;">
+    <div class="container">
+      <div class="row g-5">
+
+        <!-- ===== MAIN COLUMN (8) ===== -->
+        <div class="col-lg-8">
+
+          <!-- Top search form -->
+          <form th:action="@{/blog}" method="get" class="mb-4">
+            <input type="hidden" name="tag" th:if="${currentTag != null and currentTag != ''}" th:value="${currentTag}"/>
+            <div class="input-group search-bar">
+              <input type="text"
+                     name="keyword"
+                     class="form-control"
+                     placeholder="Search articles..."
+                     th:value="${currentKeyword}"
+                     aria-label="Search articles"/>
+              <button type="submit" class="btn btn-search" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+          </form>
+
+          <!-- Active filter notice -->
+          <div class="active-filter-bar d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4"
+               th:if="${(currentKeyword != null and currentKeyword != '') or (currentTag != null and currentTag != '')}">
+            <span class="small text-muted">
+              Showing results
+              <span th:if="${currentKeyword != null and currentKeyword != ''}">
+                for keyword &ldquo;<strong th:text="${currentKeyword}">keyword</strong>&rdquo;
+              </span>
+              <span th:if="${currentTag != null and currentTag != ''}">
+                tagged &ldquo;<strong th:text="${currentTag}">tag</strong>&rdquo;
+              </span>
+            </span>
+            <a th:href="@{/blog}" class="btn btn-sm btn-outline-secondary">
+              <i class="fa-solid fa-xmark me-1"></i>Clear filter
+            </a>
+          </div>
+
+          <!-- Blog post cards -->
+          <div th:if="${posts != null and !posts.empty}">
+
+            <div class="d-flex flex-column gap-4">
+              <div class="card blog-card shadow-sm" th:each="post : ${posts.content}">
+                <div class="d-flex">
+
+                  <!-- Thumbnail -->
+                  <div class="blog-thumbnail">
+                    <a th:href="@{/blog/{slug}(slug=${post.slug})}">
+                      <img th:if="${post.thumbnail != null and !post.thumbnail.isEmpty()}"
+                           th:src="${post.thumbnail}"
+                           th:alt="${post.title}"
+                           loading="lazy"/>
+                      <img th:unless="${post.thumbnail != null and !post.thumbnail.isEmpty()}"
+                           src="https://placehold.co/400x280/1a2332/f7941d?text=Article"
+                           th:alt="${post.title}"
+                           loading="lazy"/>
+                    </a>
+                  </div>
+
+                  <!-- Card body -->
+                  <div class="card-body p-4">
+
+                    <!-- Category badge -->
+                    <span th:if="${post.category != null and !post.category.isEmpty()}"
+                          class="badge rounded-pill mb-2 fw-normal"
+                          style="background-color: rgba(247,148,29,.15); color: var(--orange); border: 1px solid rgba(247,148,29,.4); font-size: .72rem;"
+                          th:text="${post.category}">Category</span>
+
+                    <!-- Title -->
+                    <h5 class="card-title mb-2">
+                      <a th:href="@{/blog/{slug}(slug=${post.slug})}"
+                         th:text="${post.title}">Article Title</a>
+                    </h5>
+
+                    <!-- Meta: date + author -->
+                    <div class="blog-meta d-flex flex-wrap align-items-center mb-2">
+                      <span th:if="${post.publishedDate != null}">
+                        <i class="fa-regular fa-calendar me-1"></i>
+                        <span th:text="${#temporals.format(post.publishedDate, 'MMM dd, yyyy')}">Jan 01, 2025</span>
+                      </span>
+                      <span class="meta-sep" th:if="${post.publishedDate != null and post.author != null}">|</span>
+                      <span th:if="${post.author != null}">
+                        <i class="fa-regular fa-user me-1"></i>
+                        <span th:text="${post.author.fullName}">Author Name</span>
+                      </span>
+                    </div>
+
+                    <!-- Short description -->
+                    <p class="short-desc mb-3"
+                       th:if="${post.shortDescription != null and !post.shortDescription.isEmpty()}"
+                       th:text="${post.shortDescription}">
+                      Article excerpt goes here. A brief summary of the blog post content.
+                    </p>
+
+                    <!-- Read More -->
+                    <div class="mt-auto">
+                      <a th:href="@{/blog/{slug}(slug=${post.slug})}" class="btn-read-more">
+                        Read More <i class="fa-solid fa-arrow-right"></i>
+                      </a>
+                    </div>
+
+                  </div><!-- /card-body -->
+                </div><!-- /d-flex -->
+              </div><!-- /blog-card -->
+            </div><!-- /gap-4 list -->
+
+            <!-- Pagination -->
+            <nav th:if="${posts.totalPages > 1}" class="mt-5" aria-label="Blog pages">
+              <ul class="pagination justify-content-center gap-1">
+
+                <!-- Previous -->
+                <li class="page-item" th:classappend="${!posts.hasPrevious} ? 'disabled'">
+                  <a class="page-link"
+                     th:href="@{/blog(page=${posts.number - 1}, keyword=${currentKeyword}, tag=${currentTag})}"
+                     aria-label="Previous">
+                    <i class="fa-solid fa-chevron-left small"></i>
+                  </a>
+                </li>
+
+                <!-- Page numbers -->
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(0, posts.totalPages - 1)}"
+                    th:classappend="${i == posts.number} ? 'active'">
+                  <a class="page-link"
+                     th:href="@{/blog(page=${i}, keyword=${currentKeyword}, tag=${currentTag})}"
+                     th:text="${i + 1}">1</a>
+                </li>
+
+                <!-- Next -->
+                <li class="page-item" th:classappend="${!posts.hasNext} ? 'disabled'">
+                  <a class="page-link"
+                     th:href="@{/blog(page=${posts.number + 1}, keyword=${currentKeyword}, tag=${currentTag})}"
+                     aria-label="Next">
+                    <i class="fa-solid fa-chevron-right small"></i>
+                  </a>
+                </li>
+
+              </ul>
+
+              <p class="text-center text-muted small mt-2">
+                Page <span th:text="${posts.number + 1}">1</span>
+                of <span th:text="${posts.totalPages}">1</span>
+                &nbsp;&middot;&nbsp;
+                <span th:text="${posts.totalElements}">0</span> articles
+              </p>
+            </nav>
+
+          </div><!-- /posts exist -->
+
+          <!-- Empty state -->
+          <div th:if="${posts == null or posts.empty}" class="text-center py-5">
+            <i class="fa-regular fa-newspaper fa-3x mb-3" style="color: #dee2e6;"></i>
+            <h5 class="text-muted">No articles found</h5>
+            <p class="text-muted small mb-4">
+              Try a different search term or browse all posts.
+            </p>
+            <a th:href="@{/blog}" class="btn btn-sm btn-orange">
+              <i class="fa-solid fa-list me-1"></i>Browse All Posts
+            </a>
+          </div>
+
+        </div><!-- /col-lg-8 main -->
+
+        <!-- ===== SIDEBAR (4) ===== -->
+        <div class="col-lg-4">
+          <div class="d-flex flex-column gap-4">
+
+            <!-- Search widget -->
+            <div class="sidebar-card shadow-sm">
+              <div class="sidebar-heading">
+                <i class="fa-solid fa-magnifying-glass me-2"></i>Search
+              </div>
+              <div class="p-3">
+                <form th:action="@{/blog}" method="get">
+                  <div class="input-group sidebar-search">
+                    <input type="text"
+                           class="form-control"
+                           name="keyword"
+                           placeholder="Search articles..."
+                           th:value="${currentKeyword}"
+                           aria-label="Search articles"/>
+                    <button type="submit" class="btn" aria-label="Search">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Recent posts widget -->
+            <div class="sidebar-card shadow-sm" th:if="${recentPosts != null and !recentPosts.isEmpty()}">
+              <div class="sidebar-heading">
+                <i class="fa-solid fa-clock-rotate-left me-2"></i>Recent Posts
+              </div>
+              <div class="px-3 py-2">
+                <a th:each="rp : ${recentPosts}"
+                   th:href="@{/blog/{slug}(slug=${rp.slug})}"
+                   class="recent-post-item">
+
+                  <!-- Thumbnail -->
+                  <div th:if="${rp.thumbnail != null and !rp.thumbnail.isEmpty()}">
+                    <img th:src="${rp.thumbnail}" th:alt="${rp.title}" loading="lazy"/>
+                  </div>
+                  <div class="rp-placeholder" th:unless="${rp.thumbnail != null and !rp.thumbnail.isEmpty()}">
+                    <i class="fa-solid fa-newspaper small" style="color: rgba(247,148,29,.6);"></i>
+                  </div>
+
+                  <!-- Title + date -->
+                  <div class="flex-grow-1">
+                    <div class="rp-title" th:text="${rp.title}">Post Title</div>
+                    <div class="rp-date" th:if="${rp.publishedDate != null}">
+                      <i class="fa-regular fa-calendar me-1"></i>
+                      <span th:text="${#temporals.format(rp.publishedDate, 'MMM dd, yyyy')}">Jan 01, 2025</span>
+                    </div>
+                  </div>
+
+                </a>
+              </div>
+            </div>
+
+            <!-- CTA sidebar banner -->
+            <div class="sidebar-card shadow-sm text-center p-4"
+                 style="background: linear-gradient(135deg, var(--navy) 0%, #243447 100%);">
+              <i class="fa-solid fa-hard-hat fa-2x mb-3" style="color: var(--orange);"></i>
+              <h6 class="text-white fw-bold mb-2">Ready to Build?</h6>
+              <p class="text-white-50 small mb-3">
+                Contact us today for a free consultation and project quote.
+              </p>
+              <a href="/quote" class="btn btn-sm btn-orange w-100 fw-semibold">
+                Get a Free Quote
+              </a>
+            </div>
+
+          </div><!-- /sidebar stacked -->
+        </div><!-- /col-lg-4 sidebar -->
+
+      </div><!-- /row -->
+    </div><!-- /container -->
+  </section>
+
+  <!-- Footer fragment -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <!-- Bootstrap 5.3 JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmMIcWVlvIEbKE5p14rrNVVhFKr1"
+          crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${settings != null and settings['site_name'] != null ? settings['site_name'] + ' - Admin: ' + (testimonial != null and testimonial.id != null ? 'Edit Testimonial' : 'Add Testimonial') : 'Admin: Testimonial'}">Admin: Testimonial</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --navy:  #1a2332;
+      --orange: #f7941d;
+    }
+    body { background-color: #f0f2f5; }
+
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .admin-card .card-header {
+      background: transparent;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.25rem;
+    }
+    .btn-orange {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .btn-orange:hover {
+      background-color: #e0831a;
+      border-color: #e0831a;
+      color: #fff;
+    }
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #374151;
+    }
+    .form-text { font-size: 0.78rem; }
+
+    /* Interactive star rating widget */
+    .star-picker {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+    .star-picker input[type="radio"] { display: none; }
+    .star-picker label {
+      font-size: 1.8rem;
+      color: #d1d5db;
+      cursor: pointer;
+      transition: color 0.15s;
+      line-height: 1;
+    }
+    .star-picker label:hover,
+    .star-picker label:hover ~ label,
+    .star-picker input[type="radio"]:checked ~ label {
+      color: var(--orange);
+    }
+
+    .admin-sidebar .nav-link:hover {
+      background-color: rgba(247, 148, 29, 0.18) !important;
+      color: #f7941d !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="d-flex" style="min-height:100vh;">
+
+  <!-- SIDEBAR -->
+  <div th:replace="~{fragments/admin-sidebar :: adminSidebar}"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+
+    <!-- TOPBAR -->
+    <div th:replace="~{fragments/admin-topbar :: adminTopbar(${testimonial != null and testimonial.id != null} ? 'Edit Testimonial' : 'Add Testimonial')}"></div>
+
+    <!-- PAGE CONTENT -->
+    <main class="flex-grow-1 p-4" style="overflow-y:auto;">
+
+      <!-- Page heading -->
+      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <div>
+          <h4 class="fw-bold mb-0" style="color:var(--navy);">
+            <i class="fas fa-star me-2" style="color:var(--orange);"></i>
+            <span th:text="${testimonial != null and testimonial.id != null} ? 'Edit Testimonial' : 'Add Testimonial'">Testimonial</span>
+          </h4>
+          <p class="text-muted small mb-0">
+            <span th:text="${testimonial != null and testimonial.id != null}
+                           ? 'Update the testimonial details below'
+                           : 'Add a new customer testimonial'">Add a new customer testimonial</span>
+          </p>
+        </div>
+        <a href="/admin/testimonials" class="btn btn-outline-secondary btn-sm">
+          <i class="fas fa-arrow-left me-1"></i> Back to Testimonials
+        </a>
+      </div>
+
+      <!-- Flash messages -->
+      <div th:if="${errorMessage}"
+           class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <i class="fas fa-triangle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Form -->
+      <form th:action="@{/admin/testimonials/save}"
+            th:object="${testimonial}"
+            method="post"
+            novalidate>
+
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-7">
+
+            <!-- Customer info card -->
+            <div class="admin-card mb-4">
+              <div class="card-header">
+                <span class="fw-semibold" style="color:var(--navy);">Customer Information</span>
+              </div>
+              <div class="card-body p-4">
+
+                <!-- Customer name -->
+                <div class="mb-3">
+                  <label for="customerName" class="form-label">
+                    Customer Name <span class="text-danger">*</span>
+                  </label>
+                  <input type="text"
+                         id="customerName"
+                         th:field="*{customerName}"
+                         class="form-control"
+                         th:classappend="${#fields.hasErrors('customerName')} ? 'is-invalid' : ''"
+                         placeholder="Full name of the customer"
+                         required />
+                  <div class="invalid-feedback"
+                       th:if="${#fields.hasErrors('customerName')}"
+                       th:errors="*{customerName}">Customer name error</div>
+                </div>
+
+                <!-- Company -->
+                <div class="mb-0">
+                  <label for="company" class="form-label">Company / Organisation</label>
+                  <input type="text"
+                         id="company"
+                         th:field="*{company}"
+                         class="form-control"
+                         placeholder="e.g. Acme Corp (optional)" />
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Review card -->
+            <div class="admin-card mb-4">
+              <div class="card-header">
+                <span class="fw-semibold" style="color:var(--navy);">Review</span>
+              </div>
+              <div class="card-body p-4">
+
+                <!-- Star rating widget -->
+                <div class="mb-4">
+                  <label class="form-label d-block mb-2">Rating</label>
+                  <div class="star-picker" id="starPicker">
+                    <!-- Stars rendered 5 down to 1 (flex-direction:row-reverse reverses display) -->
+                    <input type="radio" id="star5" name="rating" value="5"
+                           th:checked="${testimonial != null and testimonial.rating == 5}" />
+                    <label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
+
+                    <input type="radio" id="star4" name="rating" value="4"
+                           th:checked="${testimonial != null and testimonial.rating == 4}" />
+                    <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+
+                    <input type="radio" id="star3" name="rating" value="3"
+                           th:checked="${testimonial != null and testimonial.rating == 3}" />
+                    <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+
+                    <input type="radio" id="star2" name="rating" value="2"
+                           th:checked="${testimonial != null and testimonial.rating == 2}" />
+                    <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+
+                    <input type="radio" id="star1" name="rating" value="1"
+                           th:checked="${testimonial != null and testimonial.rating == 1}" />
+                    <label for="star1" title="1 star"><i class="fas fa-star"></i></label>
+                  </div>
+
+                  <!-- Fallback select (accessible, hidden visually) -->
+                  <select name="rating" id="ratingSelect" class="form-select mt-2" style="max-width:200px;">
+                    <option value="">-- Select Rating --</option>
+                    <option value="1" th:selected="${testimonial != null and testimonial.rating == 1}">1 - Poor</option>
+                    <option value="2" th:selected="${testimonial != null and testimonial.rating == 2}">2 - Fair</option>
+                    <option value="3" th:selected="${testimonial != null and testimonial.rating == 3}">3 - Good</option>
+                    <option value="4" th:selected="${testimonial != null and testimonial.rating == 4}">4 - Very Good</option>
+                    <option value="5" th:selected="${testimonial != null and testimonial.rating == 5}">5 - Excellent</option>
+                  </select>
+                  <div class="form-text">Click a star or use the dropdown to set the rating.</div>
+                </div>
+
+                <!-- Comment / review text -->
+                <div class="mb-0">
+                  <label for="comment" class="form-label">Comment / Review</label>
+                  <textarea id="comment"
+                            th:field="*{comment}"
+                            class="form-control"
+                            rows="6"
+                            placeholder="Write the customer's review or testimonial here…"></textarea>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Status card -->
+            <div class="admin-card mb-4">
+              <div class="card-header">
+                <span class="fw-semibold" style="color:var(--navy);">Visibility</span>
+              </div>
+              <div class="card-body p-4">
+                <div class="mb-0">
+                  <label for="status" class="form-label">
+                    Status <span class="text-danger">*</span>
+                  </label>
+                  <select id="status" th:field="*{status}" class="form-select">
+                    <option th:each="s : ${statuses}"
+                            th:value="${s.name()}"
+                            th:text="${s.name()}"
+                            th:selected="${testimonial != null and testimonial.status == s}">PENDING</option>
+                  </select>
+                  <div class="form-text">
+                    Only <strong>Approved</strong> testimonials are shown on the public website.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-orange">
+                <i class="fas fa-save me-1"></i>
+                <span th:text="${testimonial != null and testimonial.id != null} ? 'Update Testimonial' : 'Save Testimonial'">Save Testimonial</span>
+              </button>
+              <a href="/admin/testimonials" class="btn btn-outline-secondary">
+                <i class="fas fa-times me-1"></i> Cancel
+              </a>
+            </div>
+
+          </div>
+        </div><!-- /row -->
+
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<!-- Bootstrap 5.3 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmQJf2EgANH10BAbfKN3oeZ+s8"
+        crossorigin="anonymous"></script>
+
+<script>
+  // Keep star picker and dropdown in sync
+  const starInputs  = document.querySelectorAll('.star-picker input[type="radio"]');
+  const ratingSelect = document.getElementById('ratingSelect');
+
+  starInputs.forEach(function (input) {
+    input.addEventListener('change', function () {
+      if (ratingSelect) ratingSelect.value = this.value;
+    });
+  });
+
+  if (ratingSelect) {
+    ratingSelect.addEventListener('change', function () {
+      const val = this.value;
+      starInputs.forEach(function (input) {
+        input.checked = (input.value === val);
+      });
+    });
+  }
+</script>
+</body>
+</html>

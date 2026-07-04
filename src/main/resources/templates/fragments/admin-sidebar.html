@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="adminSidebar"
+     class="d-flex flex-column text-white"
+     style="width:250px; min-width:250px; background-color:#1a2332; min-height:100vh;
+            position:sticky; top:0; height:100vh; overflow-y:auto; flex-shrink:0;">
+
+  <!-- Brand -->
+  <a href="/admin/dashboard"
+     class="text-decoration-none text-white d-flex align-items-center gap-2 px-3 py-4
+            border-bottom border-secondary">
+    <div class="rounded d-flex align-items-center justify-content-center flex-shrink-0"
+         style="width:38px; height:38px; background:#f7941d;">
+      <i class="fas fa-hard-hat" style="font-size:1rem;"></i>
+    </div>
+    <div>
+      <div class="fw-bold lh-1" style="font-size:0.95rem;">BuildMaster</div>
+      <div class="lh-1 mt-1" style="font-size:0.7rem; color:#8ea3b8;">Admin Panel</div>
+    </div>
+  </a>
+
+  <!-- Navigation -->
+  <ul class="nav flex-column flex-grow-1 px-2 pt-3 pb-2" style="gap:2px; list-style:none;">
+
+    <li>
+      <a href="/admin/dashboard"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-tachometer-alt fa-fw" style="width:18px;"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/projects"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-building fa-fw" style="width:18px;"></i>
+        <span>Projects</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/services"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-cogs fa-fw" style="width:18px;"></i>
+        <span>Services</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/blog"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-blog fa-fw" style="width:18px;"></i>
+        <span>Blog</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/gallery"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-images fa-fw" style="width:18px;"></i>
+        <span>Gallery</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/team"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-users fa-fw" style="width:18px;"></i>
+        <span>Team</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/testimonials"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-star fa-fw" style="width:18px;"></i>
+        <span>Testimonials</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/contacts"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-envelope fa-fw" style="width:18px;"></i>
+        <span class="flex-grow-1">Contact Messages</span>
+        <span th:if="${unreadCount != null and unreadCount > 0}"
+              th:text="${unreadCount}"
+              class="badge rounded-pill"
+              style="background:#dc3545; font-size:0.7rem;"></span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/quotes"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-file-invoice fa-fw" style="width:18px;"></i>
+        <span>Quote Requests</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/settings"
+         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+         style="font-size:0.9rem; transition:background 0.15s;">
+        <i class="fas fa-sliders-h fa-fw" style="width:18px;"></i>
+        <span>Settings</span>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- Logout -->
+  <div class="px-2 pb-3 border-top border-secondary pt-2">
+    <a href="/logout"
+       class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
+       style="font-size:0.9rem; transition:background 0.15s;">
+      <i class="fas fa-sign-out-alt fa-fw" style="width:18px;"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+
+  <!-- Sidebar hover style embedded in fragment -->
+  <style>
+    nav[th\:fragment] a.nav-link:hover,
+    nav .nav-link:hover {
+      background-color: rgba(247, 148, 29, 0.18) !important;
+      color: #f7941d !important;
+    }
+  </style>
+
+</nav>
+
+</body>
+</html>

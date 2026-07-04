@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${settings != null and settings['site_name'] != null ? (project != null ? project.name + ' | ' + settings['site_name'] : settings['site_name'] + ' - Project Detail') : 'BuildMaster - Project Detail'}">BuildMaster - Project Detail</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main { flex: 1; }
+
+    /* ---- Hero ---- */
+    .page-hero {
+      background-color: #1a2332;
+      padding: 5rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-accent-line {
+      width: 60px;
+      height: 4px;
+      background-color: #f7941d;
+      border-radius: 2px;
+      margin: 0 auto 1.5rem;
+    }
+
+    /* ---- Details panel ---- */
+    .detail-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.09);
+    }
+
+    .detail-thumbnail {
+      width: 100%;
+      border-radius: 0.75rem;
+      object-fit: cover;
+      max-height: 420px;
+      display: block;
+    }
+
+    .detail-thumbnail-placeholder {
+      width: 100%;
+      border-radius: 0.75rem;
+      height: 320px;
+      background-color: #1a2332;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.18);
+      font-size: 4rem;
+    }
+
+    /* Detail table */
+    .detail-table td:first-child {
+      width: 45%;
+      color: #6c757d;
+      font-weight: 600;
+      font-size: 0.875rem;
+      vertical-align: top;
+      padding-top: 0.65rem;
+    }
+
+    .detail-table td:last-child {
+      font-size: 0.95rem;
+      color: #1a2332;
+      vertical-align: top;
+      padding-top: 0.65rem;
+    }
+
+    /* ---- Status badge colors ---- */
+    .badge-ongoing    { background-color: #0d6efd; color: #fff; }
+    .badge-completed  { background-color: #198754; color: #fff; }
+    .badge-upcoming   { background-color: #0dcaf0; color: #000; }
+    .badge-on-hold    { background-color: #ffc107; color: #000; }
+    .badge-default    { background-color: #6c757d; color: #fff; }
+
+    /* ---- Progress bar ---- */
+    .progress {
+      height: 10px;
+      border-radius: 5px;
+      background-color: #e9ecef;
+    }
+
+    .progress-bar {
+      background-color: #f7941d;
+      border-radius: 5px;
+    }
+
+    /* ---- Description section ---- */
+    .section-divider {
+      border-color: #dee2e6;
+      margin: 2.5rem 0;
+    }
+
+    .section-title-line {
+      width: 50px;
+      height: 3px;
+      background-color: #f7941d;
+      border-radius: 2px;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ---- Image gallery ---- */
+    .gallery-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      display: block;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .gallery-img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ---- Buttons ---- */
+    .btn-orange {
+      background-color: #f7941d;
+      border-color: #f7941d;
+      color: #fff;
+      font-weight: 600;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .btn-orange:hover,
+    .btn-orange:focus {
+      background-color: #d97b0e;
+      border-color: #d97b0e;
+      color: #fff;
+    }
+
+    .btn-navy {
+      background-color: #1a2332;
+      border-color: #1a2332;
+      color: #fff;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+
+    .btn-navy:hover,
+    .btn-navy:focus {
+      background-color: #111827;
+      border-color: #111827;
+      color: #fff;
+    }
+
+    /* ---- Lightbox overlay ---- */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 1055;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #lightbox.active { display: flex; }
+
+    #lightboxImg {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 0.5rem;
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5);
+    }
+
+    #lightboxClose {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      background: none;
+      border: none;
+      padding: 0;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+    }
+
+    #lightboxClose:hover { opacity: 1; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <div th:replace="~{fragments/navbar :: navbar}" th:with="activePage='projects'"></div>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- ===== PAGE HERO ===== -->
+    <section class="page-hero text-center position-relative">
+      <div class="container position-relative">
+        <div class="hero-accent-line"></div>
+        <h1 class="display-5 fw-bold text-white mb-3"
+            th:text="${project != null} ? ${project.name} : 'Project Detail'">
+          Project Name
+        </h1>
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item">
+              <a href="/" class="text-white-50 text-decoration-none">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="/projects" class="text-white-50 text-decoration-none">Projects</a>
+            </li>
+            <li class="breadcrumb-item active text-white"
+                aria-current="page"
+                th:text="${project != null} ? ${project.name} : 'Detail'">Detail</li>
+          </ol>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ===== PROJECT DETAILS ===== -->
+    <section class="py-5 py-md-6">
+      <div class="container py-2">
+
+        <!-- Not-found guard -->
+        <div th:if="${project == null}" class="text-center py-5">
+          <i class="fa-solid fa-circle-exclamation fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted">Project not found.</h4>
+          <a href="/projects" class="btn btn-navy mt-3">
+            <i class="fa-solid fa-arrow-left me-1"></i>Back to Projects
+          </a>
+        </div>
+
+        <div th:if="${project != null}">
+
+          <!-- ===== 2-COLUMN LAYOUT: image + details table ===== -->
+          <div class="card detail-card p-4 p-md-5 mb-5">
+            <div class="row g-4 g-lg-5 align-items-start">
+
+              <!-- LEFT: Thumbnail image -->
+              <div class="col-12 col-lg-5">
+                <img th:if="${project.thumbnail != null and !project.thumbnail.isEmpty()}"
+                     th:src="${project.thumbnail}"
+                     th:alt="${project.name}"
+                     class="detail-thumbnail"
+                     loading="lazy" />
+                <div th:unless="${project.thumbnail != null and !project.thumbnail.isEmpty()}"
+                     class="detail-thumbnail-placeholder">
+                  <i class="fa-solid fa-building"></i>
+                </div>
+
+                <!-- Status badge below image on mobile/tablet -->
+                <div class="mt-3 d-flex gap-2 flex-wrap">
+                  <span class="badge rounded-pill px-3 py-2 fw-semibold fs-6"
+                        th:classappend="${project.status != null and project.status.name() == 'ONGOING' ? 'badge-ongoing' : project.status != null and project.status.name() == 'COMPLETED' ? 'badge-completed' : project.status != null and project.status.name() == 'UPCOMING' ? 'badge-upcoming' : project.status != null and project.status.name() == 'ON_HOLD' ? 'badge-on-hold' : 'badge-default'}"
+                        th:text="${project.status != null ? project.status.name().replace('_', ' ') : 'Unknown'}">
+                    Status
+                  </span>
+                  <span th:if="${project.category != null}"
+                        class="badge rounded-pill px-3 py-2 fw-normal fs-6"
+                        style="background-color: rgba(26,35,50,0.1); color: #1a2332;"
+                        th:text="${project.category}">Category</span>
+                </div>
+              </div>
+
+              <!-- RIGHT: Details table -->
+              <div class="col-12 col-lg-7">
+                <div class="section-title-line"></div>
+                <h2 class="fw-bold mb-4" style="color: #1a2332;"
+                    th:text="${project.name}">Project Name</h2>
+
+                <table class="table detail-table table-borderless mb-0">
+                  <tbody>
+
+                    <tr>
+                      <td><i class="fa-solid fa-user-tie me-2" style="color: #f7941d;"></i>Client</td>
+                      <td th:text="${project.clientName != null} ? ${project.clientName} : '—'">Client Name</td>
+                    </tr>
+
+                    <tr>
+                      <td><i class="fa-solid fa-location-dot me-2" style="color: #f7941d;"></i>Location</td>
+                      <td th:text="${project.location != null} ? ${project.location} : '—'">Location</td>
+                    </tr>
+
+                    <tr>
+                      <td><i class="fa-solid fa-circle-dot me-2" style="color: #f7941d;"></i>Status</td>
+                      <td>
+                        <span class="badge rounded-pill fw-semibold"
+                              th:classappend="${project.status != null and project.status.name() == 'ONGOING' ? 'badge-ongoing' : project.status != null and project.status.name() == 'COMPLETED' ? 'badge-completed' : project.status != null and project.status.name() == 'UPCOMING' ? 'badge-upcoming' : project.status != null and project.status.name() == 'ON_HOLD' ? 'badge-on-hold' : 'badge-default'}"
+                              th:text="${project.status != null ? project.status.name().replace('_', ' ') : '—'}">
+                          Status
+                        </span>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td><i class="fa-solid fa-tag me-2" style="color: #f7941d;"></i>Category</td>
+                      <td th:text="${project.category != null} ? ${project.category} : '—'">Category</td>
+                    </tr>
+
+                    <tr>
+                      <td><i class="fa-solid fa-calendar-day me-2" style="color: #f7941d;"></i>Start Date</td>
+                      <td th:text="${project.startDate != null} ? ${#temporals.format(project.startDate, 'dd MMM yyyy')} : '—'">Start Date</td>
+                    </tr>
+
+                    <tr>
+                      <td><i class="fa-solid fa-calendar-check me-2" style="color: #f7941d;"></i>Completion Date</td>
+                      <td th:text="${project.completionDate != null} ? ${#temporals.format(project.completionDate, 'dd MMM yyyy')} : '—'">Completion Date</td>
+                    </tr>
+
+                    <tr>
+                      <td><i class="fa-solid fa-dollar-sign me-2" style="color: #f7941d;"></i>Budget</td>
+                      <td th:text="${project.budget != null} ? '$' + ${#numbers.formatDecimal(project.budget, 1, 'COMMA', 2, 'POINT')} : '—'">Budget</td>
+                    </tr>
+
+                    <tr>
+                      <td><i class="fa-solid fa-percent me-2" style="color: #f7941d;"></i>Completion</td>
+                      <td>
+                        <div th:if="${project.completionPercentage != null}">
+                          <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="fw-semibold small" style="color: #1a2332;"
+                                  th:text="${project.completionPercentage} + '%'">0%</span>
+                          </div>
+                          <div class="progress" style="min-width: 140px;">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 th:style="'width: ' + ${project.completionPercentage} + '%'"
+                                 th:attr="aria-valuenow=${project.completionPercentage}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                        <span th:unless="${project.completionPercentage != null}">—</span>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+
+                <!-- Quote CTA -->
+                <div class="mt-4 pt-2 d-flex gap-2 flex-wrap">
+                  <a href="/quote" class="btn btn-orange">
+                    <i class="fa-solid fa-file-invoice me-1"></i>Get a Similar Quote
+                  </a>
+                  <a href="/contact" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-phone me-1"></i>Contact Us
+                  </a>
+                </div>
+
+              </div><!-- /right col -->
+            </div><!-- /row -->
+          </div><!-- /card -->
+
+          <!-- ===== DESCRIPTION ===== -->
+          <div th:if="${project.description != null and !project.description.isEmpty()}"
+               class="card detail-card p-4 p-md-5 mb-5">
+            <div class="section-title-line"></div>
+            <h3 class="fw-bold mb-4" style="color: #1a2332;">Project Overview</h3>
+            <div class="text-muted lh-lg"
+                 th:utext="${project.description}">
+              Project description goes here.
+            </div>
+          </div>
+
+          <!-- ===== IMAGE GALLERY ===== -->
+          <div th:if="${project.images != null and !project.images.isEmpty()}"
+               class="card detail-card p-4 p-md-5 mb-5">
+            <div class="section-title-line"></div>
+            <h3 class="fw-bold mb-4" style="color: #1a2332;">
+              <i class="fa-solid fa-images me-2" style="color: #f7941d;"></i>Project Gallery
+            </h3>
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
+              <div class="col" th:each="img : ${project.images}">
+                <img th:src="${img}"
+                     th:alt="${project.name} + ' image'"
+                     class="gallery-img"
+                     loading="lazy"
+                     onclick="openLightbox(this.src)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BACK BUTTON ===== -->
+          <div class="text-center pb-3">
+            <a href="/projects" class="btn btn-navy btn-lg px-5">
+              <i class="fa-solid fa-arrow-left me-2"></i>Back to Projects
+            </a>
+          </div>
+
+        </div><!-- /th:if project != null -->
+      </div><!-- /.container -->
+    </section>
+
+  </main>
+
+  <!-- ===== LIGHTBOX OVERLAY ===== -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Image lightbox"
+       onclick="closeLightbox(event)">
+    <button id="lightboxClose" aria-label="Close lightbox" onclick="closeLightbox()">&times;</button>
+    <img id="lightboxImg" src="" alt="Project image enlarged" />
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <!-- Bootstrap 5.3 JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmJ7ZhqIR2CuKKuKVD9ROdBGSQ4"
+          crossorigin="anonymous"></script>
+
+  <!-- Lightbox script -->
+  <script>
+    (function () {
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = document.getElementById('lightboxImg');
+
+      window.openLightbox = function (src) {
+        lightboxImg.src = src;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+
+      window.closeLightbox = function (event) {
+        if (!event || event.target !== lightboxImg) {
+          lightbox.classList.remove('active');
+          lightboxImg.src = '';
+          document.body.style.overflow = '';
+        }
+      };
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { window.closeLightbox(); }
+      });
+    })();
+  </script>
+
+</body>
+</html>

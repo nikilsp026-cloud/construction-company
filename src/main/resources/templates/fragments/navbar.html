@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="navbar"
+     class="navbar navbar-expand-lg navbar-dark"
+     style="background-color: #1a2332;">
+
+  <div class="container">
+
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold fs-4" href="/">
+      <span style="color: #f7941d;">&#9632;</span>&nbsp;
+      <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">BuildMaster</span>
+    </a>
+
+    <!-- Hamburger toggle -->
+    <button class="navbar-toggler border-0"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav links -->
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+
+        <li class="nav-item">
+          <a class="nav-link px-2"
+             th:classappend="${activePage == 'home'} ? 'active fw-semibold' : ''"
+             href="/">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link px-2"
+             th:classappend="${activePage == 'about'} ? 'active fw-semibold' : ''"
+             href="/about">About</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link px-2"
+             th:classappend="${activePage == 'services'} ? 'active fw-semibold' : ''"
+             href="/services">Services</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link px-2"
+             th:classappend="${activePage == 'projects'} ? 'active fw-semibold' : ''"
+             href="/projects">Projects</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link px-2"
+             th:classappend="${activePage == 'gallery'} ? 'active fw-semibold' : ''"
+             href="/gallery">Gallery</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link px-2"
+             th:classappend="${activePage == 'blog'} ? 'active fw-semibold' : ''"
+             href="/blog">Blog</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link px-2"
+             th:classappend="${activePage == 'contact'} ? 'active fw-semibold' : ''"
+             href="/contact">Contact</a>
+        </li>
+
+        <!-- Get a Quote — orange CTA button -->
+        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+          <a class="btn btn-sm fw-semibold px-3 py-2"
+             th:classappend="${activePage == 'quote'} ? 'active' : ''"
+             href="/quote"
+             style="background-color: #f7941d; color: #fff; border: none;">
+            Get a Quote
+          </a>
+        </li>
+
+      </ul>
+    </div><!-- /.collapse -->
+
+  </div><!-- /.container -->
+
+</nav>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Login' : 'BuildMaster - Login'">BuildMaster - Login</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <style>
+    body {
+      background-color: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    /* Hero strip behind the card */
+    .login-hero {
+      background-color: #1a2332;
+      padding: 3rem 0 6rem;
+    }
+
+    /* Pull the card up to overlap the hero strip */
+    .login-card-wrapper {
+      margin-top: -4rem;
+    }
+
+    .login-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .login-card .card-header {
+      background-color: #1a2332;
+      border-radius: 0.75rem 0.75rem 0 0 !important;
+      padding: 2rem;
+    }
+
+    .brand-icon {
+      width: 64px;
+      height: 64px;
+      background-color: #f7941d;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.75rem;
+      color: #fff;
+    }
+
+    .btn-orange {
+      background-color: #f7941d;
+      border-color: #f7941d;
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .btn-orange:hover,
+    .btn-orange:focus {
+      background-color: #d97b0e;
+      border-color: #d97b0e;
+      color: #fff;
+    }
+
+    .form-control:focus {
+      border-color: #f7941d;
+      box-shadow: 0 0 0 0.2rem rgba(247, 148, 29, 0.25);
+    }
+
+    .form-check-input:checked {
+      background-color: #f7941d;
+      border-color: #f7941d;
+    }
+
+    .divider-text {
+      position: relative;
+      text-align: center;
+      color: #adb5bd;
+      font-size: 0.85rem;
+    }
+
+    .divider-text::before,
+    .divider-text::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #dee2e6;
+    }
+
+    .divider-text::before { left: 0; }
+    .divider-text::after  { right: 0; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- Dark hero strip for visual depth -->
+    <div class="login-hero">
+      <div class="container text-center">
+        <h1 class="text-white fw-bold fs-3 mb-1">Welcome Back</h1>
+        <p class="text-white-50 mb-0">Sign in to your account to continue</p>
+      </div>
+    </div>
+
+    <!-- Login card -->
+    <div class="container login-card-wrapper pb-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+
+          <div class="card login-card">
+
+            <!-- Card header with brand -->
+            <div class="card-header text-center">
+              <div class="brand-icon">
+                <i class="fa-solid fa-helmet-safety"></i>
+              </div>
+              <h2 class="text-white fw-bold fs-5 mb-1"
+                  th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">
+                BuildMaster
+              </h2>
+              <p class="text-white-50 small mb-0"
+                 th:text="${settings != null and settings['site_tagline'] != null} ? ${settings['site_tagline']} : 'Building Tomorrow, Today.'">
+                Building Tomorrow, Today.
+              </p>
+            </div>
+
+            <!-- Card body: login form -->
+            <div class="card-body p-4 p-md-5">
+
+              <!-- Error alert (shown when ?error param is present) -->
+              <div th:if="${param.error}"
+                   class="alert alert-danger d-flex align-items-center gap-2 mb-4"
+                   role="alert">
+                <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
+                <span>Invalid username or password. Please try again.</span>
+              </div>
+
+              <!-- Logout success (shown when ?logout param is present) -->
+              <div th:if="${param.logout}"
+                   class="alert alert-success d-flex align-items-center gap-2 mb-4"
+                   role="alert">
+                <i class="fa-solid fa-circle-check flex-shrink-0"></i>
+                <span>You have been signed out successfully.</span>
+              </div>
+
+              <!-- Login form (CSRF disabled per spec) -->
+              <form method="post" action="/login" novalidate>
+
+                <!-- Username -->
+                <div class="mb-3">
+                  <label for="username" class="form-label fw-semibold text-secondary small">
+                    <i class="fa-solid fa-user me-1"></i>Username
+                  </label>
+                  <input type="text"
+                         id="username"
+                         name="username"
+                         class="form-control"
+                         placeholder="Enter your username"
+                         autocomplete="username"
+                         required
+                         autofocus />
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                  <label for="password" class="form-label fw-semibold text-secondary small">
+                    <i class="fa-solid fa-lock me-1"></i>Password
+                  </label>
+                  <div class="input-group">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Enter your password"
+                           autocomplete="current-password"
+                           required />
+                    <button class="btn btn-outline-secondary"
+                            type="button"
+                            id="togglePassword"
+                            title="Show / hide password"
+                            aria-label="Toggle password visibility">
+                      <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Remember me + Forgot password row -->
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="rememberMe"
+                           name="remember-me"
+                           value="true" />
+                    <label class="form-check-label small text-secondary" for="rememberMe">
+                      Remember me
+                    </label>
+                  </div>
+                  <a href="/forgot-password"
+                     class="small text-decoration-none"
+                     style="color: #f7941d;">
+                    Forgot password?
+                  </a>
+                </div>
+
+                <!-- Submit -->
+                <div class="d-grid mb-3">
+                  <button type="submit" class="btn btn-orange btn-lg">
+                    <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
+                  </button>
+                </div>
+
+              </form>
+
+              <!-- Divider -->
+              <div class="divider-text my-3">or</div>
+
+              <!-- Back to home -->
+              <div class="text-center mt-3">
+                <a href="/"
+                   class="btn btn-outline-secondary btn-sm px-4">
+                  <i class="fa-solid fa-house me-1"></i>Back to Home
+                </a>
+              </div>
+
+            </div><!-- /card-body -->
+
+            <!-- Card footer -->
+            <div class="card-footer bg-light text-center py-3 rounded-bottom">
+              <span class="text-secondary small">Don't have an account?&nbsp;</span>
+              <a href="/register"
+                 class="small fw-semibold text-decoration-none"
+                 style="color: #f7941d;">
+                Request Access
+              </a>
+            </div>
+
+          </div><!-- /card -->
+
+        </div><!-- /col -->
+      </div><!-- /row -->
+    </div><!-- /container -->
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <!-- Bootstrap 5.3 JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmJ7ZhqIR2CuKKuKVD9ROdBGSQ4"
+          crossorigin="anonymous"></script>
+
+  <!-- Password toggle -->
+  <script>
+    (function () {
+      var btn  = document.getElementById('togglePassword');
+      var icon = document.getElementById('togglePasswordIcon');
+      var pwd  = document.getElementById('password');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var isHidden = pwd.type === 'password';
+        pwd.type = isHidden ? 'text' : 'password';
+        icon.classList.toggle('fa-eye',        !isHidden);
+        icon.classList.toggle('fa-eye-slash',   isHidden);
+        btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+      });
+    })();
+  </script>
+
+</body>
+</html>

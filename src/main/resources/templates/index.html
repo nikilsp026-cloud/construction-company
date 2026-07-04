@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Home' : 'BuildMaster — Home'">BuildMaster — Home</title>
+
+  <!-- Bootstrap 5.3 -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous"/>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"/>
+
+  <style>
+    :root {
+      --navy: #1a2332;
+      --orange: #f7941d;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #333;
+    }
+
+    /* Hero */
+    .hero-section {
+      background: linear-gradient(135deg, #1a2332 0%, #243447 60%, #1a2332 100%);
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><path d="M0 0h60v60H0z" fill="none"/><path d="M30 0v60M0 30h60" stroke="rgba(247,148,29,0.06)" stroke-width="1"/></svg>') repeat;
+    }
+    .hero-section .container { position: relative; z-index: 1; }
+
+    /* Stats bar */
+    .stats-bar {
+      background-color: var(--navy);
+    }
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: .04em;
+    }
+
+    /* Section headings */
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .section-subtitle {
+      color: #6c757d;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .section-divider {
+      width: 56px;
+      height: 4px;
+      background: var(--orange);
+      border-radius: 2px;
+      margin: .75rem auto 1.5rem;
+    }
+
+    /* Service cards */
+    .service-card {
+      border: none;
+      border-radius: 12px;
+      transition: transform .25s ease, box-shadow .25s ease;
+      height: 100%;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(26,35,50,.14) !important;
+    }
+    .service-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(247,148,29,.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    /* Project cards */
+    .project-card {
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform .25s ease, box-shadow .25s ease;
+      height: 100%;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(26,35,50,.16) !important;
+    }
+    .project-card img {
+      height: 220px;
+      object-fit: cover;
+      width: 100%;
+    }
+    .project-card .card-body { display: flex; flex-direction: column; }
+    .project-card .card-body .mt-auto { margin-top: auto !important; }
+
+    /* Testimonial cards */
+    .testimonial-card {
+      border: none;
+      border-radius: 12px;
+      height: 100%;
+    }
+    .testimonial-quote {
+      font-size: 2.5rem;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .star { color: #ffc107; }
+    .star-empty { color: #dee2e6; }
+
+    /* Team cards */
+    .team-card {
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform .25s ease, box-shadow .25s ease;
+      height: 100%;
+    }
+    .team-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(26,35,50,.14) !important;
+    }
+    .team-card img {
+      height: 240px;
+      object-fit: cover;
+      object-position: top;
+      width: 100%;
+    }
+    .team-social a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(26,35,50,.08);
+      color: var(--navy);
+      font-size: .85rem;
+      text-decoration: none;
+      transition: background .2s, color .2s;
+    }
+    .team-social a:hover {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    /* CTA section */
+    .cta-section {
+      background: linear-gradient(135deg, #1a2332 0%, #243447 100%);
+    }
+
+    /* Buttons */
+    .btn-orange {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-orange:hover {
+      background-color: #e6840f;
+      border-color: #e6840f;
+      color: #fff;
+    }
+    .btn-outline-light:hover {
+      color: var(--navy) !important;
+    }
+
+    /* Status badges */
+    .badge-ongoing   { background-color: #0d6efd22; color: #0d6efd; border: 1px solid #0d6efd55; }
+    .badge-completed { background-color: #19875422; color: #198754; border: 1px solid #19875455; }
+    .badge-upcoming  { background-color: #ffc10722; color: #856404;  border: 1px solid #ffc10755; }
+    .badge-on-hold   { background-color: #6c757d22; color: #6c757d; border: 1px solid #6c757d55; }
+  </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Navbar fragment -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- ===================== 1. HERO ===================== -->
+  <section class="hero-section">
+    <div class="container py-5">
+      <div class="row align-items-center">
+        <div class="col-lg-8 text-white">
+
+          <span class="badge mb-3 px-3 py-2 fw-semibold"
+                style="background-color: rgba(247,148,29,.2); color: #f7941d; border: 1px solid rgba(247,148,29,.4); font-size: .8rem; letter-spacing:.06em;">
+            <i class="fas fa-hard-hat me-1"></i>TRUSTED CONSTRUCTION PARTNER
+          </span>
+
+          <h1 class="display-4 fw-black lh-sm mb-4"
+              th:text="${settings != null and settings['hero_title'] != null} ? ${settings['hero_title']} : 'Building Dreams Into Reality'">
+            Building Dreams Into Reality
+          </h1>
+
+          <p class="lead mb-5"
+             style="color: rgba(255,255,255,.75); max-width: 580px; line-height: 1.7;"
+             th:text="${settings != null and settings['hero_subtitle'] != null} ? ${settings['hero_subtitle']} : 'We deliver high-quality construction solutions — from residential homes to large commercial complexes — with precision, safety, and on-time completion.'">
+            We deliver high-quality construction solutions — from residential homes to large commercial complexes — with precision, safety, and on-time completion.
+          </p>
+
+          <div class="d-flex flex-wrap gap-3">
+            <a href="/projects"
+               class="btn btn-outline-light btn-lg fw-semibold px-4">
+              <i class="fas fa-building me-2"></i>View Projects
+            </a>
+            <a href="/quote"
+               class="btn btn-orange btn-lg fw-semibold px-4">
+              <i class="fas fa-file-alt me-2"></i>Get a Quote
+            </a>
+          </div>
+
+        </div><!-- /col -->
+      </div><!-- /row -->
+    </div><!-- /container -->
+  </section>
+
+  <!-- ===================== 2. STATS BAR ===================== -->
+  <section class="stats-bar py-5">
+    <div class="container">
+      <div class="row g-4 text-center">
+
+        <div class="col-6 col-md-3">
+          <div class="stat-number">500+</div>
+          <div class="stat-label mt-1">Projects Completed</div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="stat-number">200+</div>
+          <div class="stat-label mt-1">Happy Clients</div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="stat-number">15</div>
+          <div class="stat-label mt-1">Years Experience</div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="stat-number">50+</div>
+          <div class="stat-label mt-1">Team Members</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. SERVICES ===================== -->
+  <section class="py-6 py-md-7" style="padding-top: 5rem; padding-bottom: 5rem;">
+    <div class="container">
+
+      <!-- Heading -->
+      <div class="text-center mb-5">
+        <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">What We Do</p>
+        <h2 class="section-title">Our Services</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">
+          From the ground up — we provide end-to-end construction services tailored to your needs.
+        </p>
+      </div>
+
+      <!-- No services fallback -->
+      <div th:if="${services == null or services.isEmpty()}" class="text-center text-muted py-4">
+        <i class="fas fa-tools fa-2x mb-3 d-block" style="color: var(--orange);"></i>
+        <p>Services will appear here once added.</p>
+      </div>
+
+      <!-- Services grid -->
+      <div th:if="${services != null and !services.isEmpty()}"
+           class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+        <div class="col" th:each="service : ${services}">
+          <div class="card service-card shadow-sm p-4">
+            <div class="d-flex align-items-start gap-3 mb-3">
+              <div class="service-icon-wrap">
+                <i th:classappend="${service.icon != null and !service.icon.isEmpty()} ? ${service.icon} : 'fas fa-tools'"></i>
+              </div>
+              <h5 class="fw-bold mb-0 mt-2" th:text="${service.title}">Service Title</h5>
+            </div>
+            <p class="text-muted small mb-3"
+               th:text="${service.description != null} ? ${#strings.abbreviate(service.description, 140)} : 'Service description coming soon.'">
+              Service description.
+            </p>
+            <a href="/services" class="fw-semibold small text-decoration-none mt-auto"
+               style="color: var(--orange);">
+              Learn More <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /services grid -->
+
+      <!-- "All Services" link -->
+      <div th:if="${services != null and services.size() > 3}" class="text-center mt-5">
+        <a href="/services" class="btn btn-orange px-5 py-2 fw-semibold">
+          View All Services <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== 4. FEATURED PROJECTS ===================== -->
+  <section style="padding-top: 5rem; padding-bottom: 5rem; background-color: #f8f9fa;">
+    <div class="container">
+
+      <!-- Heading -->
+      <div class="text-center mb-5">
+        <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">Our Work</p>
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">
+          A selection of projects that showcase our commitment to quality, innovation, and client satisfaction.
+        </p>
+      </div>
+
+      <!-- No projects fallback -->
+      <div th:if="${featuredProjects == null or featuredProjects.isEmpty()}" class="text-center text-muted py-4">
+        <i class="fas fa-building fa-2x mb-3 d-block" style="color: var(--orange);"></i>
+        <p>Featured projects will appear here.</p>
+      </div>
+
+      <!-- Projects grid -->
+      <div th:if="${featuredProjects != null and !featuredProjects.isEmpty()}"
+           class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+        <div class="col" th:each="project : ${featuredProjects}">
+          <div class="card project-card shadow-sm">
+
+            <!-- Thumbnail -->
+            <a th:href="@{/projects/{id}(id=${project.id})}">
+              <img th:if="${project.thumbnail != null and !project.thumbnail.isEmpty()}"
+                   th:src="${project.thumbnail}"
+                   th:alt="${project.name}"
+                   loading="lazy"/>
+              <img th:unless="${project.thumbnail != null and !project.thumbnail.isEmpty()}"
+                   src="https://placehold.co/600x400/1a2332/white?text=Project"
+                   th:alt="${project.name}"
+                   loading="lazy"/>
+            </a>
+
+            <div class="card-body p-4">
+
+              <!-- Badges row -->
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span th:if="${project.category != null and !project.category.isEmpty()}"
+                      class="badge rounded-pill fw-normal small"
+                      style="background-color: rgba(247,148,29,.15); color: var(--orange); border: 1px solid rgba(247,148,29,.4);"
+                      th:text="${project.category}">Category</span>
+
+                <span th:if="${project.status != null}"
+                      class="badge rounded-pill fw-normal small"
+                      th:classappend="${project.status.name() == 'COMPLETED' ? 'badge-completed' : project.status.name() == 'ONGOING' ? 'badge-ongoing' : project.status.name() == 'UPCOMING' ? 'badge-upcoming' : 'badge-on-hold'}"
+                      th:text="${project.status.name().replace('_', ' ')}">Status</span>
+              </div>
+
+              <h5 class="fw-bold mb-2" th:text="${project.name}">Project Name</h5>
+
+              <p class="text-muted small mb-0"
+                 th:if="${project.location != null and !project.location.isEmpty()}">
+                <i class="fas fa-map-marker-alt me-1" style="color: var(--orange);"></i>
+                <span th:text="${project.location}">Location</span>
+              </p>
+
+              <div class="mt-auto pt-3">
+                <a th:href="@{/projects/{id}(id=${project.id})}"
+                   class="btn btn-sm btn-orange fw-semibold px-3">
+                  View Details <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+              </div>
+
+            </div><!-- /card-body -->
+          </div><!-- /project-card -->
+        </div><!-- /col -->
+
+      </div><!-- /projects grid -->
+
+      <div class="text-center mt-5">
+        <a href="/projects" class="btn btn-outline-secondary px-5 py-2 fw-semibold">
+          View All Projects <i class="fas fa-building ms-2"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== 5. TESTIMONIALS ===================== -->
+  <section style="padding-top: 5rem; padding-bottom: 5rem; background-color: #fff;">
+    <div class="container">
+
+      <!-- Heading -->
+      <div class="text-center mb-5">
+        <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">Client Feedback</p>
+        <h2 class="section-title">What Our Clients Say</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">
+          We take pride in delivering exceptional results. Here is what our valued clients have to say.
+        </p>
+      </div>
+
+      <!-- No testimonials fallback -->
+      <div th:if="${testimonials == null or testimonials.isEmpty()}" class="text-center text-muted py-4">
+        <i class="fas fa-comment-dots fa-2x mb-3 d-block" style="color: var(--orange);"></i>
+        <p>Testimonials will appear here.</p>
+      </div>
+
+      <!-- Testimonials grid -->
+      <div th:if="${testimonials != null and !testimonials.isEmpty()}"
+           class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+        <div class="col" th:each="testimonial : ${testimonials}">
+          <div class="card testimonial-card shadow-sm p-4">
+
+            <!-- Quote icon -->
+            <div class="testimonial-quote mb-2">"</div>
+
+            <!-- Star rating -->
+            <div class="mb-3">
+              <span th:each="i : ${#numbers.sequence(1, testimonial.rating)}"
+                    class="star"><i class="fas fa-star"></i></span>
+              <span th:each="i : ${#numbers.sequence(testimonial.rating + 1, 5)}"
+                    class="star-empty"><i class="fas fa-star"></i></span>
+            </div>
+
+            <!-- Comment -->
+            <p class="text-muted small flex-grow-1"
+               th:text="${testimonial.comment != null} ? ${#strings.abbreviate(testimonial.comment, 200)} : ''">
+              Client comment here.
+            </p>
+
+            <!-- Author -->
+            <div class="d-flex align-items-center gap-3 mt-3 pt-3 border-top">
+              <img th:if="${testimonial.photo != null and !testimonial.photo.isEmpty()}"
+                   th:src="${testimonial.photo}"
+                   th:alt="${testimonial.customerName}"
+                   class="rounded-circle"
+                   style="width: 48px; height: 48px; object-fit: cover;"
+                   loading="lazy"/>
+              <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
+                   th:unless="${testimonial.photo != null and !testimonial.photo.isEmpty()}"
+                   style="width:48px; height:48px; background-color: var(--orange); font-size: 1.1rem; flex-shrink:0;"
+                   th:text="${#strings.toUpperCase(#strings.substring(testimonial.customerName, 0, 1))}">A</div>
+              <div>
+                <div class="fw-bold small" th:text="${testimonial.customerName}">Client Name</div>
+                <div class="text-muted" style="font-size: .78rem;"
+                     th:if="${testimonial.company != null and !testimonial.company.isEmpty()}"
+                     th:text="${testimonial.company}">Company</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /testimonials grid -->
+
+    </div>
+  </section>
+
+  <!-- ===================== 6. TEAM ===================== -->
+  <section style="padding-top: 5rem; padding-bottom: 5rem; background-color: #f8f9fa;">
+    <div class="container">
+
+      <!-- Heading -->
+      <div class="text-center mb-5">
+        <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">The People Behind The Work</p>
+        <h2 class="section-title">Meet Our Team</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">
+          Our skilled professionals bring decades of combined experience to every project we undertake.
+        </p>
+      </div>
+
+      <!-- No team fallback -->
+      <div th:if="${team == null or team.isEmpty()}" class="text-center text-muted py-4">
+        <i class="fas fa-users fa-2x mb-3 d-block" style="color: var(--orange);"></i>
+        <p>Team members will appear here.</p>
+      </div>
+
+      <!-- Team grid -->
+      <div th:if="${team != null and !team.isEmpty()}"
+           class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+
+        <div class="col" th:each="member : ${team}">
+          <div class="card team-card shadow-sm text-center">
+
+            <!-- Photo -->
+            <img th:if="${member.photo != null and !member.photo.isEmpty()}"
+                 th:src="${member.photo}"
+                 th:alt="${member.name}"
+                 loading="lazy"/>
+            <div th:unless="${member.photo != null and !member.photo.isEmpty()}"
+                 class="d-flex align-items-center justify-content-center fw-bold text-white"
+                 style="height:240px; background: linear-gradient(135deg,#1a2332,#243447); font-size:3rem;">
+              <i class="fas fa-user-tie" style="color: rgba(247,148,29,.6);"></i>
+            </div>
+
+            <div class="card-body p-3">
+              <h6 class="fw-bold mb-1" th:text="${member.name}">Team Member</h6>
+              <p class="small mb-2" style="color: var(--orange); font-weight:600;"
+                 th:text="${member.designation}">Designation</p>
+
+              <!-- Social links -->
+              <div class="team-social d-flex justify-content-center gap-2 mt-2">
+                <a th:if="${member.linkedin != null and !member.linkedin.isEmpty()}"
+                   th:href="${member.linkedin}"
+                   target="_blank" rel="noopener" title="LinkedIn"
+                   aria-label="LinkedIn profile">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a th:if="${member.facebook != null and !member.facebook.isEmpty()}"
+                   th:href="${member.facebook}"
+                   target="_blank" rel="noopener" title="Facebook"
+                   aria-label="Facebook profile">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a th:if="${member.instagram != null and !member.instagram.isEmpty()}"
+                   th:href="${member.instagram}"
+                   target="_blank" rel="noopener" title="Instagram"
+                   aria-label="Instagram profile">
+                  <i class="fab fa-instagram"></i>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /team grid -->
+
+    </div>
+  </section>
+
+  <!-- ===================== 7. CTA ===================== -->
+  <section class="cta-section py-6 text-center text-white"
+           style="padding-top: 5rem; padding-bottom: 5rem;">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7">
+          <h2 class="fw-black mb-3" style="font-size: 2.2rem;">
+            Ready to Build Your Dream Project?
+          </h2>
+          <p class="mb-4" style="color: rgba(255,255,255,.72); font-size: 1.1rem; line-height: 1.7;">
+            Let's turn your vision into a landmark. Our team is ready to discuss your project,
+            provide expert guidance, and deliver results that exceed expectations.
+          </p>
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="/quote" class="btn btn-orange btn-lg fw-semibold px-5">
+              <i class="fas fa-file-alt me-2"></i>Get a Free Quote
+            </a>
+            <a href="/contact" class="btn btn-outline-light btn-lg fw-semibold px-5">
+              <i class="fas fa-phone me-2"></i>Contact Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer fragment -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <!-- Bootstrap 5.3 JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmMIcWVlvIEbKE5p14rrNVVhFKr1"
+          crossorigin="anonymous"></script>
+</body>
+</html>

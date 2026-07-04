@@ -1,0 +1,81 @@
+package com.construction.controller.admin;
+
+import com.construction.entity.Blog;
+import com.construction.repository.UserRepository;
+import com.construction.service.BlogService;
+import com.construction.service.ContactMessageService;
+import com.construction.service.WebsiteSettingService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDateTime;
+
+@Controller
+@RequestMapping("/admin/blog")
+@RequiredArgsConstructor
+public class AdminBlogController {
+
+    private final BlogService blogService;
+    private final UserRepository userRepository;
+    private final ContactMessageService contactMessageService;
+    private final WebsiteSettingService websiteSettingService;
+
+    private void addCommonAttributes(Model model) {
+        model.addAttribute("unreadCount", contactMessageService.countUnread());
+        model.addAttribute("settings", websiteSettingService.getAllAsMap());
+    }
+
+    @GetMapping
+    public String list(@RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       Model model) {
+        addCommonAttributes(model);
+        model.addAttribute("posts", blogService.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())));
+        return "admin/blog/list";
+    }
+
+    @GetMapping("/new")
+    public String newForm(Model model) {
+        addCommonAttributes(model);
+        model.addAttribute("blog", new Blog());
+        model.addAttribute("statuses", Blog.BlogStatus.values());
+        model.addAttribute("authors", userRepository.findAll());
+        return "admin/blog/form";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        addCommonAttributes(model);
+        model.addAttribute("blog", blogService.findById(id).orElseThrow());
+        model.addAttribute("statuses", Blog.BlogStatus.values());
+        model.addAttribute("authors", userRepository.findAll());
+        return "admin/blog/form";
+    }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute Blog blog,
+                       @RequestParam(required = false) Long authorId,
+                       RedirectAttributes ra) {
+        if (authorId != null) {
+            blog.setAuthor(userRepository.findById(authorId).orElse(null));
+        }
+        if (blog.getStatus() == Blog.BlogStatus.PUBLISHED && blog.getPublishedDate() == null) {
+            blog.setPublishedDate(LocalDateTime.now());
+        }
+        blogService.save(blog);
+        ra.addFlashAttribute("successMessage", "Blog post saved.");
+        return "redirect:/admin/blog";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        blogService.delete(id);
+        ra.addFlashAttribute("successMessage", "Blog post deleted.");
+        return "redirect:/admin/blog";
+    }
+}

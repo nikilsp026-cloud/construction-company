@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${service != null and service.id != null ? (settings != null and settings['site_name'] != null ? settings['site_name'] : 'Admin') + ' - Edit Service' : (settings != null and settings['site_name'] != null ? settings['site_name'] : 'Admin') + ' - New Service'}">Admin: Service Form</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --navy:  #1a2332;
+      --orange: #f7941d;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    #adminSidebar {
+      width: 250px;
+      min-height: 100vh;
+      background-color: var(--navy);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1040;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.25s ease;
+    }
+
+    #adminSidebar .sidebar-brand {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #adminSidebar .nav-link {
+      color: rgba(255,255,255,0.65);
+      padding: 0.65rem 1.5rem;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    #adminSidebar .nav-link:hover,
+    #adminSidebar .nav-link.active {
+      background-color: rgba(247,148,29,0.15);
+      color: var(--orange);
+    }
+
+    #adminSidebar .nav-link i {
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    #adminSidebar .sidebar-section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.35);
+      padding: 1rem 1.5rem 0.35rem;
+    }
+
+    /* ── Topbar ── */
+    #adminTopbar {
+      position: fixed;
+      top: 0;
+      left: 250px;
+      right: 0;
+      height: 60px;
+      background-color: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      z-index: 1030;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    /* ── Main content ── */
+    #adminMain {
+      margin-left: 250px;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    .content-area {
+      padding: 1.75rem;
+    }
+
+    /* ── Form card ── */
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.35rem;
+    }
+
+    .form-label .required {
+      color: #dc2626;
+      margin-left: 2px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 0.2rem rgba(247,148,29,0.2);
+    }
+
+    .section-divider {
+      border-top: 1px solid #e2e8f0;
+      margin: 1.5rem 0 1.25rem;
+    }
+
+    .section-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .icon-live-preview {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background-color: rgba(247,148,29,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: var(--orange);
+      flex-shrink: 0;
+      border: 2px dashed rgba(247,148,29,0.3);
+      transition: all 0.2s;
+    }
+
+    .img-preview {
+      width: 140px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-orange {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+
+    .btn-orange:hover {
+      background-color: #e0831a;
+      border-color: #e0831a;
+      color: #fff;
+    }
+
+    /* Common icon suggestions */
+    .icon-suggestion {
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.78rem;
+      background: #f8fafc;
+      transition: border-color 0.15s, background 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #475569;
+    }
+
+    .icon-suggestion:hover {
+      border-color: var(--orange);
+      background-color: rgba(247,148,29,0.06);
+      color: var(--orange);
+    }
+
+    @media (max-width: 991.98px) {
+      #adminSidebar {
+        width: 0;
+        overflow: hidden;
+      }
+      #adminSidebar.show {
+        width: 250px;
+      }
+      #adminTopbar,
+      #adminMain {
+        left: 0;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     SIDEBAR
+     ════════════════════════════════════════════════ -->
+<div id="adminSidebar">
+
+  <a href="/admin/dashboard" class="sidebar-brand">
+    <i class="fa-solid fa-helmet-safety"></i>
+    <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">BuildMaster</span>
+  </a>
+
+  <nav class="flex-grow-1 py-2">
+    <div class="sidebar-section-label">Main</div>
+    <a href="/admin/dashboard" class="nav-link">
+      <i class="fa-solid fa-gauge-high"></i> Dashboard
+    </a>
+
+    <div class="sidebar-section-label mt-1">Content</div>
+    <a href="/admin/projects" class="nav-link">
+      <i class="fa-solid fa-building-columns"></i> Projects
+    </a>
+    <a href="/admin/services" class="nav-link active">
+      <i class="fa-solid fa-screwdriver-wrench"></i> Services
+    </a>
+    <a href="/admin/blog" class="nav-link">
+      <i class="fa-solid fa-newspaper"></i> Blog Posts
+    </a>
+    <a href="/admin/gallery" class="nav-link">
+      <i class="fa-solid fa-images"></i> Gallery
+    </a>
+
+    <div class="sidebar-section-label mt-1">Engagement</div>
+    <a href="/admin/quotes" class="nav-link">
+      <i class="fa-solid fa-file-invoice-dollar"></i> Quote Requests
+    </a>
+    <a href="/admin/messages" class="nav-link position-relative">
+      <i class="fa-solid fa-envelope"></i> Messages
+      <span th:if="${unreadCount != null and unreadCount > 0}"
+            class="badge rounded-pill ms-auto"
+            style="background-color: var(--orange); font-size: 0.7rem;"
+            th:text="${unreadCount}">0</span>
+    </a>
+
+    <div class="sidebar-section-label mt-1">System</div>
+    <a href="/admin/settings" class="nav-link">
+      <i class="fa-solid fa-gear"></i> Settings
+    </a>
+  </nav>
+
+  <div class="p-3 border-top" style="border-color: rgba(255,255,255,0.08) !important;">
+    <a href="/admin/logout" class="nav-link px-0">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+  </div>
+</div>
+<!-- /SIDEBAR -->
+
+
+<!-- ════════════════════════════════════════════════
+     TOPBAR
+     ════════════════════════════════════════════════ -->
+<div id="adminTopbar">
+  <button class="btn btn-sm btn-outline-secondary d-lg-none border-0"
+          id="sidebarToggle" type="button" aria-label="Toggle sidebar">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <nav aria-label="breadcrumb" class="me-auto">
+    <ol class="breadcrumb mb-0 small">
+      <li class="breadcrumb-item">
+        <a href="/admin/dashboard" class="text-decoration-none" style="color: var(--orange);">Admin</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="/admin/services" class="text-decoration-none" style="color: var(--orange);">Services</a>
+      </li>
+      <li class="breadcrumb-item active text-muted"
+          th:text="${service != null and service.id != null} ? 'Edit Service' : 'New Service'">
+        Service Form
+      </li>
+    </ol>
+  </nav>
+
+  <a href="/admin/messages"
+     class="btn btn-sm btn-outline-secondary border-0 position-relative me-1"
+     title="Messages">
+    <i class="fa-solid fa-envelope"></i>
+    <span th:if="${unreadCount != null and unreadCount > 0}"
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+          style="background-color: var(--orange); font-size: 0.6rem;"
+          th:text="${unreadCount}">0</span>
+  </a>
+  <a href="/" target="_blank" class="btn btn-sm btn-outline-secondary border-0" title="View site">
+    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+  </a>
+</div>
+<!-- /TOPBAR -->
+
+
+<!-- ════════════════════════════════════════════════
+     MAIN CONTENT
+     ════════════════════════════════════════════════ -->
+<div id="adminMain">
+  <div class="content-area">
+
+    <!-- Page heading -->
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold mb-0" style="color: var(--navy);">
+          <i class="fa-solid fa-screwdriver-wrench me-2" style="color: var(--orange);"></i>
+          <span th:text="${service != null and service.id != null} ? 'Edit Service' : 'New Service'">Service Form</span>
+        </h4>
+        <p class="text-muted small mb-0"
+           th:text="${service != null and service.id != null} ? 'Update service details below.' : 'Fill in the details to create a new service.'">
+          Fill in the details.
+        </p>
+      </div>
+      <a href="/admin/services" class="btn btn-sm btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left me-1"></i> Back to Services
+      </a>
+    </div>
+
+    <!-- Validation errors -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="fa-solid fa-triangle-exclamation me-2"></i>
+      <span th:text="${errorMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- ── Form ── -->
+    <form th:action="@{/admin/services/save}"
+          method="post"
+          enctype="multipart/form-data"
+          novalidate>
+
+      <!-- Hidden ID for edit -->
+      <input type="hidden" name="id" th:if="${service != null and service.id != null}" th:value="${service.id}" />
+
+      <div class="row g-3">
+
+        <!-- Left column: primary fields -->
+        <div class="col-12 col-lg-8">
+
+          <div class="admin-card p-4">
+
+            <p class="section-title">
+              <i class="fa-solid fa-circle-info me-1" style="color: var(--orange);"></i>Service Information
+            </p>
+
+            <!-- Title -->
+            <div class="mb-3">
+              <label for="title" class="form-label">
+                Service Title <span class="required">*</span>
+              </label>
+              <input type="text"
+                     id="title"
+                     name="title"
+                     class="form-control"
+                     placeholder="e.g. Commercial Construction"
+                     th:value="${service != null} ? ${service.title} : ''"
+                     required />
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea id="description"
+                        name="description"
+                        class="form-control"
+                        rows="6"
+                        placeholder="Describe what this service entails, key benefits, and what clients can expect..."
+                        th:text="${service != null} ? ${service.description} : ''"></textarea>
+              <div class="form-text">This text appears on the Services page and service detail card.</div>
+            </div>
+
+            <div class="section-divider"></div>
+            <p class="section-title">
+              <i class="fa-solid fa-icons me-1" style="color: var(--orange);"></i>Icon
+            </p>
+
+            <!-- Icon class input + live preview -->
+            <div class="mb-2">
+              <label for="icon" class="form-label">Font Awesome Icon Class</label>
+              <div class="d-flex align-items-center gap-3">
+                <div class="icon-live-preview" id="iconLivePreview">
+                  <i id="iconLiveEl"
+                     th:classappend="${service != null and service.icon != null and !service.icon.isEmpty()} ? ${service.icon} : 'fa-solid fa-gear'"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <input type="text"
+                         id="icon"
+                         name="icon"
+                         class="form-control font-monospace"
+                         placeholder="e.g. fas fa-hard-hat"
+                         th:value="${service != null} ? ${service.icon} : ''" />
+                  <div class="form-text">
+                    Enter a <a href="https://fontawesome.com/icons" target="_blank" rel="noopener noreferrer" style="color: var(--orange);">Font Awesome 6</a> class string.
+                    Examples: <code>fas fa-hard-hat</code>, <code>fa-solid fa-building</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick icon suggestions -->
+            <div class="mt-2">
+              <p class="text-muted small mb-2">Quick picks:</p>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-hard-hat">
+                  <i class="fa-solid fa-hard-hat"></i> Hard Hat
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-building">
+                  <i class="fa-solid fa-building"></i> Building
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-road">
+                  <i class="fa-solid fa-road"></i> Road
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-house-chimney">
+                  <i class="fa-solid fa-house-chimney"></i> House
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-wrench">
+                  <i class="fa-solid fa-wrench"></i> Wrench
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-crane">
+                  <i class="fa-solid fa-crane"></i> Crane
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-bolt">
+                  <i class="fa-solid fa-bolt"></i> Electrical
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-droplet">
+                  <i class="fa-solid fa-droplet"></i> Plumbing
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-snowflake">
+                  <i class="fa-solid fa-snowflake"></i> HVAC
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-paintbrush">
+                  <i class="fa-solid fa-paintbrush"></i> Interior
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-ruler-combined">
+                  <i class="fa-solid fa-ruler-combined"></i> Design
+                </button>
+                <button type="button" class="icon-suggestion" data-icon="fa-solid fa-leaf">
+                  <i class="fa-solid fa-leaf"></i> Landscaping
+                </button>
+              </div>
+            </div>
+
+          </div><!-- /admin-card primary -->
+
+        </div><!-- /col-lg-8 -->
+
+
+        <!-- Right column: status, order, image -->
+        <div class="col-12 col-lg-4">
+
+          <div class="admin-card p-4 mb-3">
+            <p class="section-title"><i class="fa-solid fa-sliders me-1" style="color: var(--orange);"></i>Status &amp; Ordering</p>
+
+            <!-- Status -->
+            <div class="mb-3">
+              <label for="status" class="form-label">Status</label>
+              <select id="status" name="status" class="form-select">
+                <option value="">— Select status —</option>
+                <option th:each="s : ${statuses}"
+                        th:value="${s.name()}"
+                        th:text="${s.name()}"
+                        th:selected="${service != null and service.status != null and service.status == s}">
+                  STATUS
+                </option>
+              </select>
+              <div class="form-text">Only ACTIVE services are shown on the public site.</div>
+            </div>
+
+            <!-- Display Order -->
+            <div class="mb-0">
+              <label for="displayOrder" class="form-label">Display Order</label>
+              <input type="number"
+                     id="displayOrder"
+                     name="displayOrder"
+                     class="form-control"
+                     placeholder="e.g. 1"
+                     min="0"
+                     step="1"
+                     th:value="${service != null} ? ${service.displayOrder} : ''" />
+              <div class="form-text">Lower numbers appear first. Leave blank to append at end.</div>
+            </div>
+          </div>
+
+          <!-- Service image upload -->
+          <div class="admin-card p-4">
+            <p class="section-title"><i class="fa-solid fa-image me-1" style="color: var(--orange);"></i>Service Image</p>
+
+            <!-- Current image preview -->
+            <div th:if="${service != null and service.imageUrl != null and !service.imageUrl.isEmpty()}"
+                 class="mb-3">
+              <p class="text-muted small mb-2">Current image:</p>
+              <img th:src="${service.imageUrl}"
+                   alt="Current service image"
+                   class="img-preview d-block mb-2" />
+              <div class="form-check form-check-sm">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="removeImage"
+                       name="removeImage"
+                       value="true" />
+                <label class="form-check-label small text-danger" for="removeImage">
+                  Remove current image
+                </label>
+              </div>
+            </div>
+
+            <label for="imageFile" class="form-label">
+              <span th:text="${service != null and service.imageUrl != null and !service.imageUrl.isEmpty()} ? 'Replace image' : 'Upload image'">Upload image</span>
+            </label>
+            <input type="file"
+                   id="imageFile"
+                   name="imageFile"
+                   class="form-control"
+                   accept="image/png,image/jpeg,image/webp,image/gif" />
+            <div class="form-text">Accepted: JPG, PNG, WebP, GIF. Recommended: 800x600 px. Max 5 MB.</div>
+
+            <!-- Live preview of new selection -->
+            <div id="newImgPreviewWrapper" class="mt-2 d-none">
+              <p class="text-muted small mb-1">New selection:</p>
+              <img id="newImgPreview" src="#" alt="Preview" class="img-preview" />
+            </div>
+          </div><!-- /image card -->
+
+        </div><!-- /col-lg-4 -->
+
+      </div><!-- /row -->
+
+      <!-- Form actions -->
+      <div class="d-flex gap-2 mt-4 flex-wrap">
+        <button type="submit" class="btn btn-orange px-4">
+          <i class="fa-solid fa-floppy-disk me-1"></i>
+          <span th:text="${service != null and service.id != null} ? 'Update Service' : 'Save Service'">Save Service</span>
+        </button>
+        <a href="/admin/services" class="btn btn-outline-secondary px-4">
+          <i class="fa-solid fa-xmark me-1"></i> Cancel
+        </a>
+      </div>
+
+    </form><!-- /form -->
+
+  </div><!-- /content-area -->
+</div><!-- /adminMain -->
+
+
+<!-- Bootstrap 5.3 JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmQJf2EgANH10BAbfKN3oeZ+s8"
+        crossorigin="anonymous"></script>
+
+<script>
+  // Mobile sidebar toggle
+  document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+    document.getElementById('adminSidebar').classList.toggle('show');
+  });
+
+  // ── Icon live preview ──
+  const iconInput   = document.getElementById('icon');
+  const iconLiveEl  = document.getElementById('iconLiveEl');
+
+  function applyIcon(classStr) {
+    if (!iconLiveEl) return;
+    // Remove all classes, then apply the new ones
+    iconLiveEl.className = '';
+    const parts = classStr.trim().split(/\s+/).filter(Boolean);
+    if (parts.length) {
+      parts.forEach(function (cls) { iconLiveEl.classList.add(cls); });
+    } else {
+      iconLiveEl.classList.add('fa-solid', 'fa-gear');
+    }
+  }
+
+  if (iconInput) {
+    iconInput.addEventListener('input', function () {
+      applyIcon(this.value);
+    });
+  }
+
+  // Quick icon suggestion buttons
+  document.querySelectorAll('.icon-suggestion').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const iconClass = this.getAttribute('data-icon');
+      if (iconInput) {
+        iconInput.value = iconClass;
+        applyIcon(iconClass);
+      }
+    });
+  });
+
+  // ── Service image live preview ──
+  const imgFileInput      = document.getElementById('imageFile');
+  const newImgWrapper     = document.getElementById('newImgPreviewWrapper');
+  const newImgPreview     = document.getElementById('newImgPreview');
+
+  if (imgFileInput) {
+    imgFileInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          newImgPreview.src = e.target.result;
+          newImgWrapper.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        newImgWrapper.classList.add('d-none');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

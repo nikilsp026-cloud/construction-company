@@ -1,0 +1,41 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# IDE - Eclipse
+.project
+.classpath
+.settings/
+
+# IDE - VS Code
+.vscode/
+
+# Spring Boot
+*.log
+logs/
+spring.log
+
+# Uploaded files (user content — not tracked in git)
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment-specific properties (contain secrets)
+application-prod.properties
+application-local.properties
+application-dev.properties
+*.env
+
+# Sensitive files
+secrets.properties

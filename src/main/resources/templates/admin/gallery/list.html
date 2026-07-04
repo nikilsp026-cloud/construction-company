@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${settings != null and settings['site_name'] != null ? settings['site_name'] + ' - Admin: Gallery' : 'Admin: Gallery'}">Admin: Gallery</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --navy:  #1a2332;
+      --orange: #f7941d;
+    }
+    body { background-color: #f0f2f5; }
+
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .admin-card .card-header {
+      background: transparent;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.25rem;
+    }
+    .table th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      border-top: none;
+    }
+    .btn-orange {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .btn-orange:hover {
+      background-color: #e0831a;
+      border-color: #e0831a;
+      color: #fff;
+    }
+    .btn-action {
+      padding: 0.25rem 0.55rem;
+      font-size: 0.8rem;
+    }
+    .gallery-thumb {
+      width: 60px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+    .thumb-placeholder {
+      width: 60px;
+      height: 45px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #cbd5e1;
+    }
+    .admin-sidebar .nav-link:hover {
+      background-color: rgba(247, 148, 29, 0.18) !important;
+      color: #f7941d !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="d-flex" style="min-height:100vh;">
+
+  <!-- SIDEBAR -->
+  <div th:replace="~{fragments/admin-sidebar :: adminSidebar}"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+
+    <!-- TOPBAR -->
+    <div th:replace="~{fragments/admin-topbar :: adminTopbar('Gallery')}"></div>
+
+    <!-- PAGE CONTENT -->
+    <main class="flex-grow-1 p-4" style="overflow-y:auto;">
+
+      <!-- Page heading -->
+      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <div>
+          <h4 class="fw-bold mb-0" style="color:var(--navy);">
+            <i class="fas fa-images me-2" style="color:var(--orange);"></i>Gallery
+          </h4>
+          <p class="text-muted small mb-0">Manage project gallery images</p>
+        </div>
+        <a href="/admin/gallery/new" class="btn btn-orange">
+          <i class="fas fa-plus me-1"></i> Add Image
+        </a>
+      </div>
+
+      <!-- Flash messages -->
+      <div th:if="${successMessage}"
+           class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div th:if="${errorMessage}"
+           class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-triangle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Gallery table card -->
+      <div class="admin-card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <span class="fw-semibold text-secondary small">
+            <span th:text="${items != null} ? ${items.totalElements} : '0'">0</span> image(s) total
+          </span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width:80px;" class="ps-4">Image</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Added</th>
+                <th class="text-end pe-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Empty state -->
+              <tr th:if="${items == null or items.isEmpty()}">
+                <td colspan="5" class="text-center py-5 text-muted">
+                  <i class="fas fa-image fa-2x mb-2 d-block" style="color:#cbd5e1;"></i>
+                  No gallery images yet.
+                  <a href="/admin/gallery/new" style="color:var(--orange);">Upload your first image.</a>
+                </td>
+              </tr>
+
+              <!-- Gallery rows -->
+              <tr th:each="item : ${items}">
+                <td class="ps-4">
+                  <img th:if="${item.imageUrl != null}"
+                       th:src="@{${item.imageUrl}}"
+                       th:alt="${item.title}"
+                       class="gallery-thumb" />
+                  <div th:unless="${item.imageUrl != null}" class="thumb-placeholder">
+                    <i class="fas fa-image"></i>
+                  </div>
+                </td>
+                <td>
+                  <div class="fw-semibold" style="color:var(--navy);" th:text="${item.title}">Image Title</div>
+                </td>
+                <td>
+                  <span th:if="${item.category != null}"
+                        class="badge bg-secondary fw-normal"
+                        th:text="${item.category}">Category</span>
+                  <span th:unless="${item.category != null}" class="text-muted small">—</span>
+                </td>
+                <td>
+                  <span class="text-muted small"
+                        th:text="${item.createdAt != null ? #temporals.format(item.createdAt, 'dd MMM yyyy') : '—'}">—</span>
+                </td>
+                <td class="text-end pe-4">
+                  <a th:href="@{/admin/gallery/edit/{id}(id=${item.id})}"
+                     class="btn btn-sm btn-outline-secondary btn-action me-1"
+                     title="Edit">
+                    <i class="fas fa-pen-to-square"></i>
+                  </a>
+                  <form th:action="@{/admin/gallery/delete/{id}(id=${item.id})}"
+                        method="post"
+                        class="d-inline"
+                        onsubmit="return confirm('Delete this image? This cannot be undone.');">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger btn-action"
+                            title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div><!-- /table-responsive -->
+
+        <!-- Pagination -->
+        <div class="card-footer bg-transparent border-top d-flex align-items-center
+                    justify-content-between flex-wrap gap-2 py-2 px-3"
+             th:if="${items != null and items.totalPages > 1}">
+          <small class="text-muted">
+            Page <span th:text="${items.number + 1}">1</span> of
+            <span th:text="${items.totalPages}">1</span>
+          </small>
+          <nav aria-label="Gallery pagination">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" th:classappend="${items.first} ? 'disabled' : ''">
+                <a class="page-link"
+                   th:href="@{/admin/gallery(page=${items.number - 1})}"
+                   aria-label="Previous">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              <li class="page-item"
+                  th:each="i : ${#numbers.sequence(0, items.totalPages - 1)}"
+                  th:classappend="${i == items.number} ? 'active' : ''">
+                <a class="page-link"
+                   th:href="@{/admin/gallery(page=${i})}"
+                   th:text="${i + 1}">1</a>
+              </li>
+              <li class="page-item" th:classappend="${items.last} ? 'disabled' : ''">
+                <a class="page-link"
+                   th:href="@{/admin/gallery(page=${items.number + 1})}"
+                   aria-label="Next">
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div><!-- /pagination -->
+
+      </div><!-- /admin-card -->
+
+    </main>
+  </div>
+</div>
+
+<!-- Bootstrap 5.3 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmQJf2EgANH10BAbfKN3oeZ+s8"
+        crossorigin="anonymous"></script>
+</body>
+</html>

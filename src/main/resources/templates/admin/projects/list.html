@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Admin: Projects' : 'Admin: Projects'">Admin: Projects</title>
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --navy:  #1a2332;
+      --orange: #f7941d;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    #adminSidebar {
+      width: 250px;
+      min-height: 100vh;
+      background-color: var(--navy);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1040;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.25s ease;
+    }
+
+    #adminSidebar .sidebar-brand {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #adminSidebar .nav-link {
+      color: rgba(255,255,255,0.65);
+      padding: 0.65rem 1.5rem;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    #adminSidebar .nav-link:hover,
+    #adminSidebar .nav-link.active {
+      background-color: rgba(247,148,29,0.15);
+      color: var(--orange);
+    }
+
+    #adminSidebar .nav-link i {
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    #adminSidebar .sidebar-section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.35);
+      padding: 1rem 1.5rem 0.35rem;
+    }
+
+    /* ── Topbar ── */
+    #adminTopbar {
+      position: fixed;
+      top: 0;
+      left: 250px;
+      right: 0;
+      height: 60px;
+      background-color: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      z-index: 1030;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    /* ── Main content ── */
+    #adminMain {
+      margin-left: 250px;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    .content-area {
+      padding: 1.75rem;
+    }
+
+    /* ── Card / Table ── */
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+
+    .admin-card .card-header {
+      background: transparent;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.25rem;
+    }
+
+    .table th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      border-top: none;
+    }
+
+    .badge-status {
+      font-size: 0.72rem;
+      padding: 0.3em 0.65em;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .btn-orange {
+      background-color: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+
+    .btn-orange:hover {
+      background-color: #e0831a;
+      border-color: #e0831a;
+      color: #fff;
+    }
+
+    .btn-action {
+      padding: 0.25rem 0.55rem;
+      font-size: 0.8rem;
+    }
+
+    /* ── Responsive sidebar collapse ── */
+    @media (max-width: 991.98px) {
+      #adminSidebar {
+        width: 0;
+        overflow: hidden;
+      }
+      #adminSidebar.show {
+        width: 250px;
+      }
+      #adminTopbar,
+      #adminMain {
+        left: 0;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     SIDEBAR  (fragment: admin-sidebar)
+     ════════════════════════════════════════════════ -->
+<div id="adminSidebar" th:fragment="admin-sidebar">
+
+  <a href="/admin/dashboard" class="sidebar-brand">
+    <i class="fa-solid fa-helmet-safety"></i>
+    <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">BuildMaster</span>
+  </a>
+
+  <nav class="flex-grow-1 py-2">
+
+    <div class="sidebar-section-label">Main</div>
+
+    <a href="/admin/dashboard"
+       class="nav-link"
+       th:classappend="${activePage == 'dashboard'} ? ' active' : ''">
+      <i class="fa-solid fa-gauge-high"></i> Dashboard
+    </a>
+
+    <div class="sidebar-section-label mt-1">Content</div>
+
+    <a href="/admin/projects"
+       class="nav-link active">
+      <i class="fa-solid fa-building-columns"></i> Projects
+    </a>
+
+    <a href="/admin/services"
+       class="nav-link"
+       th:classappend="${activePage == 'services'} ? ' active' : ''">
+      <i class="fa-solid fa-screwdriver-wrench"></i> Services
+    </a>
+
+    <a href="/admin/blog"
+       class="nav-link"
+       th:classappend="${activePage == 'blog'} ? ' active' : ''">
+      <i class="fa-solid fa-newspaper"></i> Blog Posts
+    </a>
+
+    <a href="/admin/gallery"
+       class="nav-link"
+       th:classappend="${activePage == 'gallery'} ? ' active' : ''">
+      <i class="fa-solid fa-images"></i> Gallery
+    </a>
+
+    <div class="sidebar-section-label mt-1">Engagement</div>
+
+    <a href="/admin/quotes"
+       class="nav-link"
+       th:classappend="${activePage == 'quotes'} ? ' active' : ''">
+      <i class="fa-solid fa-file-invoice-dollar"></i> Quote Requests
+    </a>
+
+    <a href="/admin/messages"
+       class="nav-link position-relative"
+       th:classappend="${activePage == 'messages'} ? ' active' : ''">
+      <i class="fa-solid fa-envelope"></i> Messages
+      <span th:if="${unreadCount != null and unreadCount > 0}"
+            class="badge rounded-pill ms-auto"
+            style="background-color: var(--orange); font-size: 0.7rem;"
+            th:text="${unreadCount}">0</span>
+    </a>
+
+    <div class="sidebar-section-label mt-1">System</div>
+
+    <a href="/admin/settings"
+       class="nav-link"
+       th:classappend="${activePage == 'settings'} ? ' active' : ''">
+      <i class="fa-solid fa-gear"></i> Settings
+    </a>
+
+  </nav>
+
+  <div class="p-3 border-top" style="border-color: rgba(255,255,255,0.08) !important;">
+    <a href="/admin/logout" class="nav-link px-0">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+  </div>
+
+</div>
+<!-- /SIDEBAR -->
+
+
+<!-- ════════════════════════════════════════════════
+     TOPBAR  (fragment: admin-topbar)
+     ════════════════════════════════════════════════ -->
+<div id="adminTopbar">
+  <!-- Hamburger for mobile -->
+  <button class="btn btn-sm btn-outline-secondary d-lg-none border-0"
+          id="sidebarToggle"
+          type="button"
+          aria-label="Toggle sidebar">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <!-- Page breadcrumb / title -->
+  <nav aria-label="breadcrumb" class="me-auto">
+    <ol class="breadcrumb mb-0 small">
+      <li class="breadcrumb-item">
+        <a href="/admin/dashboard" class="text-decoration-none" style="color: var(--orange);">Admin</a>
+      </li>
+      <li class="breadcrumb-item active text-muted">Projects</li>
+    </ol>
+  </nav>
+
+  <!-- Unread messages badge -->
+  <a href="/admin/messages"
+     class="btn btn-sm btn-outline-secondary border-0 position-relative me-1"
+     title="Messages">
+    <i class="fa-solid fa-envelope"></i>
+    <span th:if="${unreadCount != null and unreadCount > 0}"
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+          style="background-color: var(--orange); font-size: 0.6rem;"
+          th:text="${unreadCount}">0</span>
+  </a>
+
+  <!-- View site -->
+  <a href="/" target="_blank" class="btn btn-sm btn-outline-secondary border-0" title="View site">
+    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+  </a>
+</div>
+<!-- /TOPBAR -->
+
+
+<!-- ════════════════════════════════════════════════
+     MAIN CONTENT
+     ════════════════════════════════════════════════ -->
+<div id="adminMain">
+  <div class="content-area">
+
+    <!-- Page heading -->
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold mb-0" style="color: var(--navy);">
+          <i class="fa-solid fa-building-columns me-2" style="color: var(--orange);"></i>Projects
+        </h4>
+        <p class="text-muted small mb-0">Manage all construction projects</p>
+      </div>
+      <a href="/admin/projects/new" class="btn btn-orange">
+        <i class="fa-solid fa-plus me-1"></i> Add New Project
+      </a>
+    </div>
+
+    <!-- Flash messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="fa-solid fa-circle-check me-2"></i>
+      <span th:text="${successMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="fa-solid fa-triangle-exclamation me-2"></i>
+      <span th:text="${errorMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Projects table card -->
+    <div class="admin-card">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <span class="fw-semibold text-secondary small">
+          <span th:text="${projects != null} ? ${projects.totalElements} : '0'">0</span> project(s) total
+        </span>
+        <!-- Optional search / filter could go here -->
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 30%;">Name</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th class="text-center">Featured</th>
+              <th>Created</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Empty state -->
+            <tr th:if="${projects == null or projects.isEmpty()}">
+              <td colspan="6" class="text-center py-5 text-muted">
+                <i class="fa-solid fa-folder-open fa-2x mb-2 d-block" style="color: #cbd5e1;"></i>
+                No projects found. <a href="/admin/projects/new" style="color: var(--orange);">Add one now.</a>
+              </td>
+            </tr>
+
+            <!-- Project rows -->
+            <tr th:each="project : ${projects}">
+              <td>
+                <div class="fw-semibold" th:text="${project.name}">Project Name</div>
+                <div class="text-muted small" th:text="${project.location}">Location</div>
+              </td>
+              <td>
+                <span class="text-muted small" th:text="${project.category != null} ? ${project.category} : '—'">—</span>
+              </td>
+              <td>
+                <!-- Status badge colour mapping -->
+                <span class="badge-status"
+                      th:with="s=${project.status != null ? project.status.name() : 'UNKNOWN'}"
+                      th:classappend="${s == 'COMPLETED' ? 'bg-success text-white' : s == 'ONGOING' ? 'bg-warning text-dark' : s == 'ON_HOLD' ? 'bg-secondary text-white' : s == 'UPCOMING' ? 'bg-info text-dark' : 'bg-light text-secondary'}"
+                      th:text="${project.status != null ? project.status.name() : 'UNKNOWN'}">
+                  UNKNOWN
+                </span>
+              </td>
+              <td class="text-center">
+                <i th:if="${project.featured}"
+                   class="fa-solid fa-star"
+                   style="color: var(--orange);"
+                   title="Featured"></i>
+                <i th:unless="${project.featured}"
+                   class="fa-regular fa-star text-muted"
+                   title="Not featured"></i>
+              </td>
+              <td>
+                <span class="text-muted small"
+                      th:text="${project.createdAt != null} ? ${#temporals.format(project.createdAt, 'dd MMM yyyy')} : '—'">
+                  —
+                </span>
+              </td>
+              <td class="text-end">
+                <a th:href="@{/admin/projects/edit/{id}(id=${project.id})}"
+                   class="btn btn-sm btn-outline-secondary btn-action me-1"
+                   title="Edit">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+                <form th:action="@{/admin/projects/delete/{id}(id=${project.id})}"
+                      method="post"
+                      class="d-inline"
+                      onsubmit="return confirm('Delete this project? This cannot be undone.');">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <button type="submit"
+                          class="btn btn-sm btn-outline-danger btn-action"
+                          title="Delete">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div><!-- /table-responsive -->
+
+      <!-- Pagination -->
+      <div class="card-footer bg-transparent border-top d-flex align-items-center justify-content-between flex-wrap gap-2 py-2 px-3"
+           th:if="${projects != null and projects.totalPages > 1}">
+        <small class="text-muted">
+          Page <span th:text="${projects.number + 1}">1</span> of
+          <span th:text="${projects.totalPages}">1</span>
+        </small>
+        <nav aria-label="Projects pagination">
+          <ul class="pagination pagination-sm mb-0">
+
+            <!-- Previous -->
+            <li class="page-item" th:classappend="${projects.first} ? 'disabled' : ''">
+              <a class="page-link"
+                 th:href="@{/admin/projects(page=${projects.number - 1})}"
+                 aria-label="Previous">
+                <i class="fa-solid fa-chevron-left"></i>
+              </a>
+            </li>
+
+            <!-- Page numbers -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, projects.totalPages - 1)}"
+                th:classappend="${i == projects.number} ? 'active' : ''">
+              <a class="page-link"
+                 th:href="@{/admin/projects(page=${i})}"
+                 th:text="${i + 1}">1</a>
+            </li>
+
+            <!-- Next -->
+            <li class="page-item" th:classappend="${projects.last} ? 'disabled' : ''">
+              <a class="page-link"
+                 th:href="@{/admin/projects(page=${projects.number + 1})}"
+                 aria-label="Next">
+                <i class="fa-solid fa-chevron-right"></i>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+      </div><!-- /pagination -->
+
+    </div><!-- /admin-card -->
+
+  </div><!-- /content-area -->
+</div><!-- /adminMain -->
+
+
+<!-- Bootstrap 5.3 JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmQJf2EgANH10BAbfKN3oeZ+s8"
+        crossorigin="anonymous"></script>
+
+<script>
+  // Mobile sidebar toggle
+  document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+    document.getElementById('adminSidebar').classList.toggle('show');
+  });
+</script>
+
+</body>
+</html>

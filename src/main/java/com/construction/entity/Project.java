@@ -1,6 +1,8 @@
 package com.construction.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,6 +29,7 @@ public class Project {
     private Long id;
 
     @Column(nullable = false, length = 200)
+    @NotBlank(message = "Project name is required.")
     private String name;
 
     @Column(columnDefinition = "TEXT")
@@ -50,6 +53,7 @@ public class Project {
     private ProjectStatus status = ProjectStatus.ONGOING;
 
     @Column(precision = 15, scale = 2)
+    @PositiveOrZero(message = "Budget cannot be negative.")
     private BigDecimal budget;
 
     /** Path to the main thumbnail image */

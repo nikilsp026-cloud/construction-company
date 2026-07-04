@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Something went wrong — KV Construction</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #131c2e;
+      font-family: 'Poppins', 'Segoe UI', Roboto, Arial, sans-serif;
+      color: #1f2937;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    .code {
+      font-size: 64px;
+      font-weight: 800;
+      color: #f7941d;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0 0 12px;
+      color: #111827;
+    }
+    p.message {
+      color: #4b5563;
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0 0 28px;
+    }
+    .actions a {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      margin: 0 6px;
+    }
+    .btn-primary { background: #f7941d; color: #111827; }
+    .btn-secondary { background: #f1f5f9; color: #374151; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="code" th:text="${status} ?: '500'">500</div>
+    <h1 th:text="${error} ?: 'Unexpected error'">Unexpected error</h1>
+    <p class="message"
+       th:text="${status} == 404
+                 ? 'The page you\'re looking for doesn\'t exist or may have moved.'
+                 : 'Something went wrong on our end. Please try again, and contact support if the problem continues.'">
+      Something went wrong on our end. Please try again, and contact support if the problem continues.
+    </p>
+    <div class="actions">
+      <a href="/" class="btn-primary">Go to homepage</a>
+      <a href="/admin/dashboard" class="btn-secondary">Admin dashboard</a>
+    </div>
+  </div>
+</body>
+</html>

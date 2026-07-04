@@ -16,9 +16,11 @@ import java.util.Optional;
 public class TestimonialService {
 
     private final TestimonialRepository testimonialRepository;
+    private final FileStorageService fileStorageService;
 
-    public TestimonialService(TestimonialRepository testimonialRepository) {
+    public TestimonialService(TestimonialRepository testimonialRepository, FileStorageService fileStorageService) {
         this.testimonialRepository = testimonialRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional(readOnly = true)
@@ -37,10 +39,19 @@ public class TestimonialService {
     }
 
     public Testimonial save(Testimonial t) {
+        if (t.getId() != null && t.getPhoto() == null) {
+            testimonialRepository.findById(t.getId())
+                    .ifPresent(existing -> t.setPhoto(existing.getPhoto()));
+        }
         return testimonialRepository.save(t);
     }
 
     public void delete(Long id) {
-        testimonialRepository.deleteById(id);
+        testimonialRepository.findById(id).ifPresent(t -> {
+            if (t.getPhoto() != null && !t.getPhoto().isBlank()) {
+                fileStorageService.deleteFile(t.getPhoto());
+            }
+            testimonialRepository.delete(t);
+        });
     }
 }

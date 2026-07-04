@@ -4,12 +4,18 @@
 <body>
 
 <header th:fragment="adminTopbar(pageTitle)"
-        class="d-flex justify-content-between align-items-center bg-white border-bottom shadow-sm px-4"
+        class="admin-topbar d-flex justify-content-between align-items-center px-4"
         style="min-height:64px; position:sticky; top:0; z-index:100;">
 
   <!-- Page title -->
   <div class="d-flex align-items-center gap-2">
-    <h5 class="mb-0 fw-bold" style="color:#1a2332;" th:text="${pageTitle}">Dashboard</h5>
+    <button type="button"
+            id="adminSidebarToggle"
+            class="btn btn-sm btn-outline-secondary border-0 d-lg-none me-1"
+            aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <h5 class="mb-0 fw-bold" style="color:var(--ink);" th:text="${pageTitle}">Dashboard</h5>
   </div>
 
   <!-- Right side: user info + logout -->
@@ -18,11 +24,11 @@
     <!-- Admin identity -->
     <div class="d-flex align-items-center gap-2">
       <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0"
-           style="width:34px; height:34px; background:#1a2332; font-size:0.8rem; font-weight:600;">
+           style="width:34px; height:34px; background: linear-gradient(135deg, var(--navy), var(--navy-3)); font-size:0.8rem; font-weight:600;">
         <i class="fas fa-user-shield" style="font-size:0.75rem;"></i>
       </div>
       <div class="d-none d-sm-block">
-        <div class="small fw-semibold lh-1" style="color:#1a2332;">
+        <div class="small fw-semibold lh-1" style="color:var(--ink);">
           <!-- Spring Security principal name; falls back gracefully if Thymeleaf Security extras absent -->
           <span sec:authentication="name">Admin</span>
         </div>
@@ -33,7 +39,7 @@
     <!-- Logout button -->
     <a href="/logout"
        class="btn btn-sm border d-flex align-items-center gap-1"
-       style="color:#1a2332; border-color:#ced4da; font-size:0.8rem;">
+       style="color:var(--ink); border-color:#ced4da; font-size:0.8rem;">
       <i class="fas fa-sign-out-alt"></i>
       <span class="d-none d-sm-inline">Logout</span>
     </a>

@@ -18,9 +18,11 @@ import java.util.Optional;
 public class BlogService {
 
     private final BlogRepository blogRepository;
+    private final FileStorageService fileStorageService;
 
-    public BlogService(BlogRepository blogRepository) {
+    public BlogService(BlogRepository blogRepository, FileStorageService fileStorageService) {
         this.blogRepository = blogRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional(readOnly = true)
@@ -66,11 +68,20 @@ public class BlogService {
                     .replaceAll("^-+|-+$", "");
             b.setSlug(slug);
         }
+        if (b.getId() != null && b.getThumbnail() == null) {
+            blogRepository.findById(b.getId())
+                    .ifPresent(existing -> b.setThumbnail(existing.getThumbnail()));
+        }
         return blogRepository.save(b);
     }
 
     public void delete(Long id) {
-        blogRepository.deleteById(id);
+        blogRepository.findById(id).ifPresent(blog -> {
+            if (blog.getThumbnail() != null && !blog.getThumbnail().isBlank()) {
+                fileStorageService.deleteFile(blog.getThumbnail());
+            }
+            blogRepository.delete(blog);
+        });
     }
 
     @Transactional(readOnly = true)

@@ -18,6 +18,9 @@ target/
 # IDE - VS Code
 .vscode/
 
+# Claude Code local settings (machine-specific tool permissions, not project config)
+.claude/
+
 # Spring Boot
 *.log
 logs/
@@ -31,11 +34,19 @@ uploads/
 Thumbs.db
 desktop.ini
 
-# Environment-specific properties (contain secrets)
-application-prod.properties
+# Environment-specific properties with real local secrets (never committed).
+# application-prod.properties and application-dev.properties themselves ARE
+# tracked - they only contain ${ENV_VAR} placeholders, never live credentials.
 application-local.properties
-application-dev.properties
 *.env
+.env
+.env.*
+
+# Local database files (legacy H2 artifacts — every environment now uses Neon
+# PostgreSQL, but these are excluded in case any local file DB is ever created)
+data/
+*.mv.db
+*.trace.db
 
 # Sensitive files
 secrets.properties

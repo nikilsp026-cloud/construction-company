@@ -4,6 +4,7 @@ import com.construction.entity.Blog;
 import com.construction.repository.UserRepository;
 import com.construction.service.BlogService;
 import com.construction.service.ContactMessageService;
+import com.construction.service.FileStorageService;
 import com.construction.service.WebsiteSettingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
@@ -22,6 +24,7 @@ public class AdminBlogController {
 
     private final BlogService blogService;
     private final UserRepository userRepository;
+    private final FileStorageService fileStorageService;
     private final ContactMessageService contactMessageService;
     private final WebsiteSettingService websiteSettingService;
 
@@ -60,13 +63,26 @@ public class AdminBlogController {
     @PostMapping("/save")
     public String save(@ModelAttribute Blog blog,
                        @RequestParam(required = false) Long authorId,
-                       RedirectAttributes ra) {
+                       @RequestParam(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
+                       RedirectAttributes ra) throws java.io.IOException {
         if (authorId != null) {
             blog.setAuthor(userRepository.findById(authorId).orElse(null));
         }
         if (blog.getStatus() == Blog.BlogStatus.PUBLISHED && blog.getPublishedDate() == null) {
             blog.setPublishedDate(LocalDateTime.now());
         }
+        if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+            if (blog.getId() != null) {
+                blogService.findById(blog.getId()).ifPresent(existing -> {
+                    if (existing.getThumbnail() != null && !existing.getThumbnail().isBlank()) {
+                        fileStorageService.deleteFile(existing.getThumbnail());
+                    }
+                });
+            }
+            blog.setThumbnail(fileStorageService.saveImage(thumbnailFile, "images"));
+        }
+        // If no new file was uploaded, leave blog.thumbnail null - BlogService.save()
+        // will carry the existing value forward on update.
         blogService.save(blog);
         ra.addFlashAttribute("successMessage", "Blog post saved.");
         return "redirect:/admin/blog";

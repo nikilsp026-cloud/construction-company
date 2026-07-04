@@ -59,8 +59,44 @@ public class ProjectService {
         return projectRepository.findById(id);
     }
 
+    /**
+     * Creates a new project, or updates an existing one.
+     * <p>
+     * On update we deliberately load the existing managed entity and copy the
+     * editable fields onto it, rather than saving the transient object bound
+     * straight from the form. The form does not (and should not) submit the
+     * {@code images} collection, so a naive {@code repository.save(formObject)}
+     * would merge in an empty list - and because {@code images} is mapped with
+     * {@code orphanRemoval = true}, that silently deletes every gallery image
+     * attached to the project on every single edit. Updating the managed
+     * entity's scalar fields in place avoids touching the collection at all.
+     */
     public Project save(Project p) {
-        return projectRepository.save(p);
+        if (p.getId() == null) {
+            return projectRepository.save(p);
+        }
+
+        Project existing = projectRepository.findById(p.getId())
+                .orElseThrow(() -> new com.construction.exception.ResourceNotFoundException("Project", p.getId()));
+
+        existing.setName(p.getName());
+        existing.setDescription(p.getDescription());
+        existing.setClientName(p.getClientName());
+        existing.setLocation(p.getLocation());
+        existing.setStartDate(p.getStartDate());
+        existing.setCompletionDate(p.getCompletionDate());
+        existing.setStatus(p.getStatus());
+        existing.setBudget(p.getBudget());
+        existing.setCategory(p.getCategory());
+        existing.setFeatured(p.isFeatured());
+        existing.setCompletionPercentage(p.getCompletionPercentage());
+        // Thumbnail handling: null = leave unchanged, "" = explicitly cleared
+        // (via the "remove thumbnail" checkbox), non-blank = new value.
+        if (p.getThumbnail() != null) {
+            existing.setThumbnail(p.getThumbnail().isBlank() ? null : p.getThumbnail());
+        }
+
+        return projectRepository.save(existing);
     }
 
     public void delete(Long id) {

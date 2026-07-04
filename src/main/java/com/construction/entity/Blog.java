@@ -32,6 +32,10 @@ public class Blog {
     @Column(name = "short_description", columnDefinition = "TEXT")
     private String shortDescription;
 
+    /** e.g. "Construction Tips", "Industry News" - shown as a badge on blog cards. */
+    @Column(length = 100)
+    private String category;
+
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -71,6 +75,20 @@ public class Blog {
     public String[] getTagArray() {
         if (tags == null || tags.isBlank()) return new String[0];
         return tags.split(",");
+    }
+
+    /**
+     * Estimated reading time in whole minutes, based on word count of the
+     * article body at a standard ~200 words/minute. Always in sync with the
+     * content (unlike a manually-entered value), and never null.
+     */
+    public Integer getReadTime() {
+        if (content == null || content.isBlank()) {
+            return null;
+        }
+        String plainText = content.replaceAll("<[^>]*>", " ");
+        int wordCount = plainText.trim().isEmpty() ? 0 : plainText.trim().split("\\s+").length;
+        return Math.max(1, (int) Math.ceil(wordCount / 200.0));
     }
 
     public enum BlogStatus {

@@ -60,13 +60,9 @@ public class AdminGalleryController {
     @PostMapping("/save")
     public String save(@ModelAttribute Gallery item,
                        @RequestParam(required = false) MultipartFile imageFile,
-                       RedirectAttributes ra) {
-        try {
-            galleryService.save(item, imageFile);
-            ra.addFlashAttribute("successMessage", "Gallery item saved.");
-        } catch (Exception e) {
-            ra.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
-        }
+                       RedirectAttributes ra) throws java.io.IOException {
+        galleryService.save(item, imageFile);
+        ra.addFlashAttribute("successMessage", "Gallery item saved.");
         return "redirect:/admin/gallery";
     }
 

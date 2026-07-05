@@ -106,22 +106,12 @@ public class AdminProjectController {
             return "admin/projects/form";
         }
 
-        Project existingForThumbnail = (project.getId() != null)
-                ? projectService.findById(project.getId()).orElse(null)
-                : null;
-
         if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
-            // New file uploaded: replace whatever thumbnail existed before.
-            if (existingForThumbnail != null && existingForThumbnail.getThumbnail() != null
-                    && !existingForThumbnail.getThumbnail().isBlank()) {
-                fileStorageService.deleteFile(existingForThumbnail.getThumbnail());
-            }
+            // New file uploaded. ProjectService.save() deletes whatever thumbnail
+            // existed before, using the entity it already has to load for the update.
             project.setThumbnail(fileStorageService.saveImage(thumbnailFile, "images"));
-        } else if (Boolean.TRUE.equals(removeThumbnail) && existingForThumbnail != null) {
-            // "Remove current thumbnail" checkbox: clear it out both on disk and in the DB.
-            if (existingForThumbnail.getThumbnail() != null && !existingForThumbnail.getThumbnail().isBlank()) {
-                fileStorageService.deleteFile(existingForThumbnail.getThumbnail());
-            }
+        } else if (Boolean.TRUE.equals(removeThumbnail)) {
+            // "Remove current thumbnail" checkbox.
             project.setThumbnail("");
         }
         // Otherwise leave project.thumbnail as-is (null) so ProjectService.save()

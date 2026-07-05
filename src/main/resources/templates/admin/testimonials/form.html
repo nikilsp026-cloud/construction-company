@@ -21,7 +21,7 @@
     <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
   <style>
@@ -47,8 +47,8 @@
       color: #fff;
     }
     .btn-orange:hover {
-      background-color: #e0831a;
-      border-color: #e0831a;
+      background-color: #e0431f;
+      border-color: #e0431f;
       color: #fff;
     }
     .form-label {
@@ -80,7 +80,7 @@
     }
 
     .admin-sidebar .nav-link:hover {
-      background-color: rgba(247, 148, 29, 0.18) !important;
+      background-color: rgba(255,90,54, 0.18) !important;
       color: var(--orange) !important;
     }
   </style>
@@ -209,7 +209,7 @@
                   </div>
 
                   <!-- Fallback select (accessible, hidden visually) -->
-                  <select name="rating" id="ratingSelect" class="form-select mt-2 visually-hidden" style="max-width:200px;">
+                  <select id="ratingSelect" class="form-select mt-2 visually-hidden" style="max-width:200px;">
                     <option value="">-- Select Rating --</option>
                     <option value="1" th:selected="${testimonial != null and testimonial.rating == 1}">1 - Poor</option>
                     <option value="2" th:selected="${testimonial != null and testimonial.rating == 2}">2 - Fair</option>
@@ -246,8 +246,7 @@
                   <select id="status" th:field="*{status}" class="form-select">
                     <option th:each="s : ${statuses}"
                             th:value="${s.name()}"
-                            th:text="${s.name()}"
-                            th:selected="${testimonial != null and testimonial.status == s}">PENDING</option>
+                            th:text="${s.name()}">PENDING</option>
                   </select>
                   <div class="form-text">
                     Only <strong>Approved</strong> testimonials are shown on the public website.

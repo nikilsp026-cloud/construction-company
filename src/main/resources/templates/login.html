@@ -21,7 +21,7 @@
     <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -68,7 +68,13 @@
             <div class="card-body p-4 p-md-5">
 
               <!-- Error alert (shown when ?error param is present) -->
-              <div th:if="${param.error}"
+              <div th:if="${param.error != null and param.error[0] == 'locked'}"
+                   class="alert alert-danger d-flex align-items-center gap-2 mb-4"
+                   role="alert">
+                <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
+                <span>Too many failed login attempts. Please wait 15 minutes and try again.</span>
+              </div>
+              <div th:if="${param.error != null and param.error[0] != 'locked'}"
                    class="alert alert-danger d-flex align-items-center gap-2 mb-4"
                    role="alert">
                 <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
@@ -136,11 +142,6 @@
                       Remember me
                     </label>
                   </div>
-                  <a href="/forgot-password"
-                     class="small text-decoration-none"
-                     style="color: #f7941d;">
-                    Forgot password?
-                  </a>
                 </div>
 
                 <!-- Submit -->
@@ -164,16 +165,6 @@
               </div>
 
             </div><!-- /card-body -->
-
-            <!-- Card footer -->
-            <div class="card-footer bg-light text-center py-3 rounded-bottom">
-              <span class="text-secondary small">Don't have an account?&nbsp;</span>
-              <a href="/register"
-                 class="small fw-semibold text-decoration-none"
-                 style="color: #f7941d;">
-                Request Access
-              </a>
-            </div>
 
           </div><!-- /card -->
 

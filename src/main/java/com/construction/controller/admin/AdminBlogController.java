@@ -6,11 +6,13 @@ import com.construction.service.BlogService;
 import com.construction.service.ContactMessageService;
 import com.construction.service.FileStorageService;
 import com.construction.service.WebsiteSettingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -61,10 +63,19 @@ public class AdminBlogController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Blog blog,
+    public String save(@Valid @ModelAttribute("blog") Blog blog,
+                       BindingResult bindingResult,
                        @RequestParam(required = false) Long authorId,
                        @RequestParam(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
-                       RedirectAttributes ra) throws java.io.IOException {
+                       RedirectAttributes ra,
+                       Model model) throws java.io.IOException {
+        if (bindingResult.hasErrors()) {
+            addCommonAttributes(model);
+            model.addAttribute("statuses", Blog.BlogStatus.values());
+            model.addAttribute("authors", userRepository.findAll());
+            model.addAttribute("errorMessage", "Please fix the highlighted errors and try again.");
+            return "admin/blog/form";
+        }
         if (authorId != null) {
             blog.setAuthor(userRepository.findById(authorId).orElse(null));
         }

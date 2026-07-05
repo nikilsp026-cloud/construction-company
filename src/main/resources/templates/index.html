@@ -19,7 +19,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -36,7 +36,7 @@
         <div class="col-lg-8 text-white">
 
           <span class="badge mb-3 px-3 py-2 fw-semibold"
-                style="background-color: rgba(247,148,29,.2); color: #f7941d; border: 1px solid rgba(247,148,29,.4); font-size: .8rem; letter-spacing:.06em;">
+                style="background-color: rgba(255,90,54,.2); color: #ff5a36; border: 1px solid rgba(255,90,54,.4); font-size: .8rem; letter-spacing:.06em;">
             <i class="fas fa-hard-hat me-1"></i>TRUSTED CONSTRUCTION PARTNER
           </span>
 
@@ -196,7 +196,7 @@
               <div class="d-flex flex-wrap gap-2 mb-2">
                 <span th:if="${project.category != null and !project.category.isEmpty()}"
                       class="badge rounded-pill fw-normal small"
-                      style="background-color: rgba(247,148,29,.15); color: var(--orange); border: 1px solid rgba(247,148,29,.4);"
+                      style="background-color: rgba(255,90,54,.15); color: var(--orange); border: 1px solid rgba(255,90,54,.4);"
                       th:text="${project.category}">Category</span>
 
                 <span th:if="${project.status != null}"
@@ -290,7 +290,7 @@
               <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
                    th:unless="${testimonial.photo != null and !testimonial.photo.isEmpty()}"
                    style="width:48px; height:48px; background-color: var(--orange); font-size: 1.1rem; flex-shrink:0;"
-                   th:text="${#strings.toUpperCase(#strings.substring(testimonial.customerName, 0, 1))}">A</div>
+                   th:text="${#strings.isEmpty(testimonial.customerName) ? '?' : #strings.toUpperCase(#strings.substring(testimonial.customerName, 0, 1))}">A</div>
               <div>
                 <div class="fw-bold small" th:text="${testimonial.customerName}">Client Name</div>
                 <div class="text-muted" style="font-size: .78rem;"
@@ -342,7 +342,7 @@
             <div th:unless="${member.photo != null and !member.photo.isEmpty()}"
                  class="d-flex align-items-center justify-content-center fw-bold text-white"
                  style="height:240px; background: linear-gradient(135deg,#1a2332,#243447); font-size:3rem;">
-              <i class="fas fa-user-tie" style="color: rgba(247,148,29,.6);"></i>
+              <i class="fas fa-user-tie" style="color: rgba(255,90,54,.6);"></i>
             </div>
 
             <div class="card-body p-3">

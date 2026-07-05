@@ -5,9 +5,11 @@ import com.construction.service.ContactMessageService;
 import com.construction.service.FileStorageService;
 import com.construction.service.TeamMemberService;
 import com.construction.service.WebsiteSettingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -49,19 +51,22 @@ public class AdminTeamController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute TeamMember member,
+    public String save(@Valid @ModelAttribute("member") TeamMember member,
+                       BindingResult bindingResult,
                        @RequestParam(required = false) MultipartFile photoFile,
-                       RedirectAttributes ra) {
-        try {
-            if (photoFile != null && !photoFile.isEmpty()) {
-                String path = fileStorageService.saveImage(photoFile, "images");
-                member.setPhoto(path);
-            }
-            teamMemberService.save(member);
-            ra.addFlashAttribute("successMessage", "Team member saved.");
-        } catch (Exception e) {
-            ra.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
+                       RedirectAttributes ra,
+                       Model model) throws java.io.IOException {
+        if (bindingResult.hasErrors()) {
+            addCommonAttributes(model);
+            model.addAttribute("errorMessage", "Please fix the highlighted errors and try again.");
+            return "admin/team/form";
         }
+        if (photoFile != null && !photoFile.isEmpty()) {
+            String path = fileStorageService.saveImage(photoFile, "images");
+            member.setPhoto(path);
+        }
+        teamMemberService.save(member);
+        ra.addFlashAttribute("successMessage", "Team member saved.");
         return "redirect:/admin/team";
     }
 

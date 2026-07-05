@@ -75,7 +75,12 @@ public class FileStorageService {
             return;
         }
         try {
-            Path full = Paths.get(uploadDir).resolve(relativePath.replaceFirst("^/uploads/", ""));
+            Path baseDir = Paths.get(uploadDir).toAbsolutePath().normalize();
+            Path full = baseDir.resolve(relativePath.replaceFirst("^/uploads/", "")).normalize();
+            if (!full.startsWith(baseDir)) {
+                log.warn("Refusing to delete file outside upload directory: '{}'", relativePath);
+                return;
+            }
             boolean deleted = Files.deleteIfExists(full);
             if (deleted) {
                 log.debug("Deleted file '{}'", full);

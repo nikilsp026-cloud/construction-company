@@ -5,9 +5,11 @@ import com.construction.service.ConstructionServiceService;
 import com.construction.service.ContactMessageService;
 import com.construction.service.FileStorageService;
 import com.construction.service.WebsiteSettingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -51,19 +53,30 @@ public class AdminServiceController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute ConstructionService service,
+    public String save(@Valid @ModelAttribute("service") ConstructionService service,
+                       BindingResult bindingResult,
                        @RequestParam(required = false) MultipartFile imageFile,
-                       RedirectAttributes ra) {
-        try {
-            if (imageFile != null && !imageFile.isEmpty()) {
-                String path = fileStorageService.saveImage(imageFile, "images");
-                service.setImage(path);
-            }
-            constructionServiceService.save(service);
-            ra.addFlashAttribute("successMessage", "Service saved successfully.");
-        } catch (Exception e) {
-            ra.addFlashAttribute("errorMessage", "Error saving service: " + e.getMessage());
+                       @RequestParam(required = false, defaultValue = "false") boolean removeImage,
+                       RedirectAttributes ra,
+                       Model model) throws java.io.IOException {
+        if (bindingResult.hasErrors()) {
+            addCommonAttributes(model);
+            model.addAttribute("statuses", ConstructionService.ServiceStatus.values());
+            model.addAttribute("errorMessage", "Please fix the highlighted errors and try again.");
+            return "admin/services/form";
         }
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String path = fileStorageService.saveImage(imageFile, "images");
+            service.setImage(path);
+        } else if (removeImage && service.getId() != null) {
+            constructionServiceService.findById(service.getId())
+                    .map(ConstructionService::getImage)
+                    .filter(image -> !image.isBlank())
+                    .ifPresent(fileStorageService::deleteFile);
+            service.setImage("");
+        }
+        constructionServiceService.save(service);
+        ra.addFlashAttribute("successMessage", "Service saved successfully.");
         return "redirect:/admin/services";
     }
 

@@ -3,9 +3,11 @@ package com.construction.controller;
 import com.construction.entity.ContactMessage;
 import com.construction.service.ContactMessageService;
 import com.construction.service.WebsiteSettingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +31,13 @@ public class ContactController {
     }
 
     @PostMapping
-    public String submit(@ModelAttribute ContactMessage message, RedirectAttributes ra) {
+    public String submit(@Valid @ModelAttribute("message") ContactMessage message, BindingResult result,
+                         Model model, RedirectAttributes ra) {
+        if (result.hasErrors()) {
+            model.addAttribute("settings", websiteSettingService.getAllAsMap());
+            model.addAttribute("activePage", "contact");
+            return "contact";
+        }
         contactMessageService.save(message);
         ra.addFlashAttribute("successMessage", "Your message has been sent. We'll get back to you soon!");
         return "redirect:/contact";

@@ -21,7 +21,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 
@@ -53,7 +53,7 @@
     .hero-accent-line {
       width: 60px;
       height: 4px;
-      background-color: #f7941d;
+      background-color: #ff5a36;
       border-radius: 2px;
       margin: 0 auto 1.5rem;
     }
@@ -117,7 +117,7 @@
     }
 
     .progress-bar {
-      background-color: #f7941d;
+      background-color: #ff5a36;
       border-radius: 5px;
     }
 
@@ -130,7 +130,7 @@
     .section-title-line {
       width: 50px;
       height: 3px;
-      background-color: #f7941d;
+      background-color: #ff5a36;
       border-radius: 2px;
       margin-bottom: 0.75rem;
     }
@@ -153,8 +153,8 @@
 
     /* ---- Buttons ---- */
     .btn-orange {
-      background-color: #f7941d;
-      border-color: #f7941d;
+      background-color: #ff5a36;
+      border-color: #ff5a36;
       color: #fff;
       font-weight: 600;
       transition: background-color 0.2s, border-color 0.2s;
@@ -310,17 +310,17 @@
                   <tbody>
 
                     <tr>
-                      <td><i class="fa-solid fa-user-tie me-2" style="color: #f7941d;"></i>Client</td>
+                      <td><i class="fa-solid fa-user-tie me-2" style="color: #ff5a36;"></i>Client</td>
                       <td th:text="${project.clientName != null} ? ${project.clientName} : '—'">Client Name</td>
                     </tr>
 
                     <tr>
-                      <td><i class="fa-solid fa-location-dot me-2" style="color: #f7941d;"></i>Location</td>
+                      <td><i class="fa-solid fa-location-dot me-2" style="color: #ff5a36;"></i>Location</td>
                       <td th:text="${project.location != null} ? ${project.location} : '—'">Location</td>
                     </tr>
 
                     <tr>
-                      <td><i class="fa-solid fa-circle-dot me-2" style="color: #f7941d;"></i>Status</td>
+                      <td><i class="fa-solid fa-circle-dot me-2" style="color: #ff5a36;"></i>Status</td>
                       <td>
                         <span class="badge rounded-pill fw-semibold"
                               th:classappend="${project.status != null and project.status.name() == 'ONGOING' ? 'badge-ongoing' : project.status != null and project.status.name() == 'COMPLETED' ? 'badge-completed' : project.status != null and project.status.name() == 'UPCOMING' ? 'badge-upcoming' : project.status != null and project.status.name() == 'ON_HOLD' ? 'badge-on-hold' : 'badge-default'}"
@@ -331,27 +331,27 @@
                     </tr>
 
                     <tr>
-                      <td><i class="fa-solid fa-tag me-2" style="color: #f7941d;"></i>Category</td>
+                      <td><i class="fa-solid fa-tag me-2" style="color: #ff5a36;"></i>Category</td>
                       <td th:text="${project.category != null} ? ${project.category} : '—'">Category</td>
                     </tr>
 
                     <tr>
-                      <td><i class="fa-solid fa-calendar-day me-2" style="color: #f7941d;"></i>Start Date</td>
+                      <td><i class="fa-solid fa-calendar-day me-2" style="color: #ff5a36;"></i>Start Date</td>
                       <td th:text="${project.startDate != null} ? ${#temporals.format(project.startDate, 'dd MMM yyyy')} : '—'">Start Date</td>
                     </tr>
 
                     <tr>
-                      <td><i class="fa-solid fa-calendar-check me-2" style="color: #f7941d;"></i>Completion Date</td>
+                      <td><i class="fa-solid fa-calendar-check me-2" style="color: #ff5a36;"></i>Completion Date</td>
                       <td th:text="${project.completionDate != null} ? ${#temporals.format(project.completionDate, 'dd MMM yyyy')} : '—'">Completion Date</td>
                     </tr>
 
                     <tr>
-                      <td><i class="fa-solid fa-indian-rupee-sign me-2" style="color: #f7941d;"></i>Budget</td>
+                      <td><i class="fa-solid fa-indian-rupee-sign me-2" style="color: #ff5a36;"></i>Budget</td>
                       <td th:text="${project.budget != null} ? ${T(com.construction.util.CurrencyUtil).formatINR(project.budget)} : '—'">Budget</td>
                     </tr>
 
                     <tr>
-                      <td><i class="fa-solid fa-percent me-2" style="color: #f7941d;"></i>Completion</td>
+                      <td><i class="fa-solid fa-percent me-2" style="color: #ff5a36;"></i>Completion</td>
                       <td>
                         <div th:if="${project.completionPercentage != null}">
                           <div class="d-flex align-items-center gap-2 mb-1">
@@ -404,7 +404,7 @@
                class="card detail-card p-4 p-md-5 mb-5">
             <div class="section-title-line"></div>
             <h3 class="fw-bold mb-4" style="color: #1a2332;">
-              <i class="fa-solid fa-images me-2" style="color: #f7941d;"></i>Project Gallery
+              <i class="fa-solid fa-images me-2" style="color: #ff5a36;"></i>Project Gallery
             </h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
               <div class="col" th:each="img : ${project.images}">

@@ -35,6 +35,11 @@ COPY --from=build --chown=spring:spring /app/target/*.jar app.jar
 
 EXPOSE 8080
 
+# Container-level readiness check (uses busybox wget, already present on
+# the alpine base image, against the actuator health endpoint).
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+
 # Koyeb sets SPRING_PROFILES_ACTIVE=prod via environment variable
 #
 # NOTE ON FILE UPLOADS: the /app/uploads directory below lives on the

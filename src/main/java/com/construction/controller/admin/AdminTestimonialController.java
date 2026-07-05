@@ -4,11 +4,13 @@ import com.construction.entity.Testimonial;
 import com.construction.service.ContactMessageService;
 import com.construction.service.TestimonialService;
 import com.construction.service.WebsiteSettingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -52,7 +54,16 @@ public class AdminTestimonialController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Testimonial testimonial, RedirectAttributes ra) {
+    public String save(@Valid @ModelAttribute("testimonial") Testimonial testimonial,
+                       BindingResult bindingResult,
+                       RedirectAttributes ra,
+                       Model model) {
+        if (bindingResult.hasErrors()) {
+            addCommonAttributes(model);
+            model.addAttribute("statuses", Testimonial.TestimonialStatus.values());
+            model.addAttribute("errorMessage", "Please fix the highlighted errors and try again.");
+            return "admin/testimonials/form";
+        }
         testimonialService.save(testimonial);
         ra.addFlashAttribute("successMessage", "Testimonial saved.");
         return "redirect:/admin/testimonials";

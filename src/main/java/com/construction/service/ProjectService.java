@@ -23,10 +23,16 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectImageRepository projectImageRepository;
     private final FileStorageService fileStorageService;
+    private final HtmlSanitizerService htmlSanitizerService;
 
     @Transactional(readOnly = true)
     public Page<Project> findAll(Pageable p) {
         return projectRepository.findAll(p);
+    }
+
+    @Transactional(readOnly = true)
+    public long count() {
+        return projectRepository.count();
     }
 
     @Transactional(readOnly = true)
@@ -72,6 +78,8 @@ public class ProjectService {
      * entity's scalar fields in place avoids touching the collection at all.
      */
     public Project save(Project p) {
+        p.setDescription(htmlSanitizerService.sanitize(p.getDescription()));
+
         if (p.getId() == null) {
             return projectRepository.save(p);
         }
@@ -91,9 +99,16 @@ public class ProjectService {
         existing.setFeatured(p.isFeatured());
         existing.setCompletionPercentage(p.getCompletionPercentage());
         // Thumbnail handling: null = leave unchanged, "" = explicitly cleared
-        // (via the "remove thumbnail" checkbox), non-blank = new value.
+        // (via the "remove thumbnail" checkbox), non-blank = new value. The old
+        // file (if replaced or cleared) is deleted here, using the entity this
+        // method already had to load - no second lookup needed in the controller.
         if (p.getThumbnail() != null) {
-            existing.setThumbnail(p.getThumbnail().isBlank() ? null : p.getThumbnail());
+            String oldThumbnail = existing.getThumbnail();
+            String newThumbnail = p.getThumbnail().isBlank() ? null : p.getThumbnail();
+            if (oldThumbnail != null && !oldThumbnail.isBlank() && !oldThumbnail.equals(newThumbnail)) {
+                fileStorageService.deleteFile(oldThumbnail);
+            }
+            existing.setThumbnail(newThumbnail);
         }
 
         return projectRepository.save(existing);
@@ -131,21 +146,20 @@ public class ProjectService {
 
     @Transactional(readOnly = true)
     public Page<Project> findFiltered(String status, String category, String keyword, Pageable p) {
-        boolean hasStatus   = status   != null && !status.isBlank();
-        boolean hasCategory = category != null && !category.isBlank();
-        boolean hasKeyword  = keyword  != null && !keyword.isBlank();
-
+        boolean hasKeyword = keyword != null && !keyword.isBlank();
         if (hasKeyword) {
             return projectRepository.searchByKeyword(keyword, p);
         }
 
+        Project.ProjectStatus statusEnum = parseStatus(status);
+        boolean hasStatus   = statusEnum != null;
+        boolean hasCategory = category != null && !category.isBlank();
+
         if (hasStatus && hasCategory) {
-            Project.ProjectStatus statusEnum = Project.ProjectStatus.valueOf(status.toUpperCase());
             return projectRepository.findByStatusAndCategory(statusEnum, category, p);
         }
 
         if (hasStatus) {
-            Project.ProjectStatus statusEnum = Project.ProjectStatus.valueOf(status.toUpperCase());
             return projectRepository.findByStatus(statusEnum, p);
         }
 
@@ -154,5 +168,18 @@ public class ProjectService {
         }
 
         return projectRepository.findAll(p);
+    }
+
+    // An unrecognized status value (bad/stale query param) should fall back to
+    // "no filter" for the public page rather than raising an error.
+    private Project.ProjectStatus parseStatus(String status) {
+        if (status == null || status.isBlank()) {
+            return null;
+        }
+        try {
+            return Project.ProjectStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

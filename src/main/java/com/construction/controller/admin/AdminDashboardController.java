@@ -34,7 +34,7 @@ public class AdminDashboardController {
         model.addAttribute("settings", websiteSettingService.getAllAsMap());
 
         // --- Top-level stat cards ---
-        long projectCount = projectService.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getTotalElements();
+        long projectCount = projectService.count();
         long serviceCount = constructionServiceService.countActive();
         long messageCount = unreadCount;
         long quoteCount   = quoteRequestService.countByStatus(QuoteRequest.QuoteStatus.PENDING);

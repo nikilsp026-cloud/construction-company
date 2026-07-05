@@ -18,7 +18,7 @@ public class ServicePageController {
 
     @GetMapping
     public String services(Model model) {
-        model.addAttribute("services", constructionServiceService.findAll());
+        model.addAttribute("services", constructionServiceService.findActive());
         model.addAttribute("settings", websiteSettingService.getAllAsMap());
         model.addAttribute("activePage", "services");
         return "services";

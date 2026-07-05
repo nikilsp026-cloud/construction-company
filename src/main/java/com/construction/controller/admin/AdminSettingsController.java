@@ -32,6 +32,7 @@ public class AdminSettingsController {
 
     @PostMapping("/save")
     public String save(@RequestParam Map<String, String> params, RedirectAttributes ra) {
+        params.remove("_csrf");
         websiteSettingService.saveAll(params);
         ra.addFlashAttribute("successMessage", "Settings saved successfully.");
         return "redirect:/admin/settings";

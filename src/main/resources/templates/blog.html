@@ -19,7 +19,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -116,7 +116,7 @@
                     <!-- Category badge -->
                     <span th:if="${post.category != null and !post.category.isEmpty()}"
                           class="badge rounded-pill mb-2 fw-normal"
-                          style="background-color: rgba(247,148,29,.15); color: var(--orange); border: 1px solid rgba(247,148,29,.4); font-size: .72rem;"
+                          style="background-color: rgba(255,90,54,.15); color: var(--orange); border: 1px solid rgba(255,90,54,.4); font-size: .72rem;"
                           th:text="${post.category}">Category</span>
 
                     <!-- Title -->
@@ -255,7 +255,7 @@
                     <img th:src="${rp.thumbnail}" th:alt="${rp.title}" loading="lazy"/>
                   </div>
                   <div class="rp-placeholder" th:unless="${rp.thumbnail != null and !rp.thumbnail.isEmpty()}">
-                    <i class="fa-solid fa-newspaper small" style="color: rgba(247,148,29,.6);"></i>
+                    <i class="fa-solid fa-newspaper small" style="color: rgba(255,90,54,.6);"></i>
                   </div>
 
                   <!-- Title + date -->

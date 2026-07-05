@@ -19,10 +19,13 @@ public class BlogService {
 
     private final BlogRepository blogRepository;
     private final FileStorageService fileStorageService;
+    private final HtmlSanitizerService htmlSanitizerService;
 
-    public BlogService(BlogRepository blogRepository, FileStorageService fileStorageService) {
+    public BlogService(BlogRepository blogRepository, FileStorageService fileStorageService,
+                        HtmlSanitizerService htmlSanitizerService) {
         this.blogRepository = blogRepository;
         this.fileStorageService = fileStorageService;
+        this.htmlSanitizerService = htmlSanitizerService;
     }
 
     @Transactional(readOnly = true)
@@ -61,8 +64,10 @@ public class BlogService {
     }
 
     public Blog save(Blog b) {
+        b.setContent(htmlSanitizerService.sanitize(b.getContent()));
         if (b.getSlug() == null || b.getSlug().isBlank()) {
-            String slug = b.getTitle()
+            String title = b.getTitle() != null ? b.getTitle() : "";
+            String slug = title
                     .toLowerCase()
                     .replaceAll("[^a-z0-9]+", "-")
                     .replaceAll("^-+|-+$", "");

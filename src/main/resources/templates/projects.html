@@ -21,7 +21,7 @@
     <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -64,7 +64,7 @@
             <!-- Status filter -->
             <div class="col-12 col-sm-6 col-lg-3">
               <label for="filterStatus" class="form-label small fw-semibold text-secondary">
-                <i class="fa-solid fa-circle-dot me-1" style="color: #f7941d;"></i>Status
+                <i class="fa-solid fa-circle-dot me-1" style="color: #ff5a36;"></i>Status
               </label>
               <select id="filterStatus" name="status" class="form-select">
                 <option value="" th:selected="${currentStatus == null or currentStatus == ''}">All Statuses</option>
@@ -82,7 +82,7 @@
             <!-- Category filter -->
             <div class="col-12 col-sm-6 col-lg-3">
               <label for="filterCategory" class="form-label small fw-semibold text-secondary">
-                <i class="fa-solid fa-tag me-1" style="color: #f7941d;"></i>Category
+                <i class="fa-solid fa-tag me-1" style="color: #ff5a36;"></i>Category
               </label>
               <select id="filterCategory" name="category" class="form-select">
                 <option value="" th:selected="${currentCategory == null or currentCategory == ''}">All Categories</option>
@@ -96,7 +96,7 @@
             <!-- Keyword search -->
             <div class="col-12 col-sm-8 col-lg-4">
               <label for="filterKeyword" class="form-label small fw-semibold text-secondary">
-                <i class="fa-solid fa-magnifying-glass me-1" style="color: #f7941d;"></i>Keyword
+                <i class="fa-solid fa-magnifying-glass me-1" style="color: #ff5a36;"></i>Keyword
               </label>
               <input type="text"
                      id="filterKeyword"
@@ -204,7 +204,7 @@
 
                 <!-- Client -->
                 <p class="text-muted small mb-0 mt-auto pt-3 border-top">
-                  <i class="fa-solid fa-user-tie me-1" style="color: #f7941d;"></i>
+                  <i class="fa-solid fa-user-tie me-1" style="color: #ff5a36;"></i>
                   <span class="fw-semibold">Client:</span>
                   <span th:text="${project.clientName != null} ? ${project.clientName} : 'N/A'">Client Name</span>
                 </p>
@@ -229,7 +229,7 @@
              class="text-center py-5">
           <i class="fa-solid fa-folder-open fa-3x text-muted mb-3"></i>
           <h5 class="text-muted">No projects found</h5>
-          <p class="text-muted">Try adjusting your filters or <a href="/projects" style="color: #f7941d;">clear all filters</a>.</p>
+          <p class="text-muted">Try adjusting your filters or <a href="/projects" style="color: #ff5a36;">clear all filters</a>.</p>
         </div>
 
         <!-- ===== PAGINATION ===== -->

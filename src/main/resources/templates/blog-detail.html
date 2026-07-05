@@ -20,7 +20,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 
@@ -113,7 +113,7 @@
     .article-body blockquote {
       border-left: 4px solid var(--orange);
       padding: 10px 20px;
-      background: rgba(247, 148, 29, .06);
+      background: rgba(255,90,54, .06);
       border-radius: 0 6px 6px 0;
       margin: 1.5rem 0;
       color: #555;
@@ -146,9 +146,9 @@
       border-radius: 20px;
       font-size: .75rem;
       font-weight: 600;
-      background: rgba(247, 148, 29, .12);
+      background: rgba(255,90,54, .12);
       color: var(--orange);
-      border: 1px solid rgba(247, 148, 29, .35);
+      border: 1px solid rgba(255,90,54, .35);
       text-decoration: none;
       transition: background .2s, color .2s;
     }
@@ -365,7 +365,7 @@
               <!-- Category badge -->
               <span th:if="${post.category != null and !post.category.isEmpty()}"
                     class="badge rounded-pill mb-3 fw-normal"
-                    style="background-color: rgba(247,148,29,.15); color: var(--orange); border: 1px solid rgba(247,148,29,.4); font-size: .75rem;"
+                    style="background-color: rgba(255,90,54,.15); color: var(--orange); border: 1px solid rgba(255,90,54,.4); font-size: .75rem;"
                     th:text="${post.category}">Category</span>
 
               <!-- Post title -->
@@ -418,7 +418,7 @@
                  th:if="${post.author != null}">
               <div class="author-box d-flex align-items-center gap-3">
                 <div class="author-initial"
-                     th:text="${#strings.toUpperCase(#strings.substring(post.author.fullName, 0, 1))}">A</div>
+                     th:text="${#strings.isEmpty(post.author.fullName) ? '?' : #strings.toUpperCase(#strings.substring(post.author.fullName, 0, 1))}">A</div>
                 <div>
                   <div class="author-label">Written by</div>
                   <div class="author-name" th:text="${post.author.fullName}">Author Name</div>
@@ -431,22 +431,22 @@
               <div class="d-flex align-items-center gap-3 flex-wrap">
                 <span class="small fw-semibold text-muted">Share this article:</span>
                 <a class="share-btn share-btn-fb"
-                   th:href="'https://www.facebook.com/sharer/sharer.php?u=' + ${#httpServletRequest.requestURL}"
+                   th:href="'https://www.facebook.com/sharer/sharer.php?u=' + ${#request.requestURL}"
                    target="_blank" rel="noopener noreferrer" title="Share on Facebook" aria-label="Share on Facebook">
                   <i class="fa-brands fa-facebook-f"></i>
                 </a>
                 <a class="share-btn share-btn-tw"
-                   th:href="'https://twitter.com/intent/tweet?url=' + ${#httpServletRequest.requestURL} + '&text=' + ${post.title}"
+                   th:href="'https://twitter.com/intent/tweet?url=' + ${#request.requestURL} + '&text=' + ${post.title}"
                    target="_blank" rel="noopener noreferrer" title="Share on X" aria-label="Share on X">
                   <i class="fa-brands fa-x-twitter"></i>
                 </a>
                 <a class="share-btn share-btn-li"
-                   th:href="'https://www.linkedin.com/sharing/share-offsite/?url=' + ${#httpServletRequest.requestURL}"
+                   th:href="'https://www.linkedin.com/sharing/share-offsite/?url=' + ${#request.requestURL}"
                    target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" aria-label="Share on LinkedIn">
                   <i class="fa-brands fa-linkedin-in"></i>
                 </a>
                 <a class="share-btn share-btn-wa"
-                   th:href="'https://api.whatsapp.com/send?text=' + ${post.title} + ' ' + ${#httpServletRequest.requestURL}"
+                   th:href="'https://api.whatsapp.com/send?text=' + ${post.title} + ' ' + ${#request.requestURL}"
                    target="_blank" rel="noopener noreferrer" title="Share on WhatsApp" aria-label="Share on WhatsApp">
                   <i class="fa-brands fa-whatsapp"></i>
                 </a>
@@ -493,7 +493,7 @@
                     <img th:src="${rp.thumbnail}" th:alt="${rp.title}" loading="lazy"/>
                   </div>
                   <div class="rp-placeholder" th:unless="${rp.thumbnail != null and !rp.thumbnail.isEmpty()}">
-                    <i class="fa-solid fa-newspaper small" style="color: rgba(247,148,29,.6);"></i>
+                    <i class="fa-solid fa-newspaper small" style="color: rgba(255,90,54,.6);"></i>
                   </div>
 
                   <!-- Title + date -->

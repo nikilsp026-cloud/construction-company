@@ -372,7 +372,26 @@ public class DataLoader implements ApplicationRunner {
                 new String[]{"stat_expert_professionals", "50+",  "text"},
                 new String[]{"stat_customer_support",     "24/7", "text"},
                 new String[]{"trust_partner_title",       "Trusted Construction Partner",     "text"},
-                new String[]{"trust_partner_text",        "Delivering quality you can trust", "text"}
+                new String[]{"trust_partner_text",        "Delivering quality you can trust", "text"},
+
+                // About page
+                new String[]{"about_subtitle",       "Learn who we are, what drives us, and why hundreds of clients choose us as their trusted construction partner.", "textarea"},
+                new String[]{"about_story_years",    "15+", "text"},
+                new String[]{"about_team_subtitle",  "Our skilled professionals bring decades of combined expertise, passion, and dedication to every project.", "textarea"},
+                new String[]{"about_value_integrity_desc",   "We operate with full transparency and hold ourselves accountable to our clients at every stage.", "textarea"},
+                new String[]{"about_value_quality_desc",     "We source premium materials and apply rigorous quality control so every structure stands the test of time.", "textarea"},
+                new String[]{"about_value_safety_desc",      "The well-being of our workforce and clients is our highest priority on every job site.", "textarea"},
+                new String[]{"about_value_innovation_desc",  "We embrace modern techniques and sustainable practices to deliver forward-thinking construction solutions.", "textarea"},
+                new String[]{"about_value_satisfaction_desc","Every decision we make centres on exceeding our client's expectations and building lasting relationships.", "textarea"},
+                new String[]{"about_advantage_team_desc",     "Our team comprises seasoned engineers, architects, and tradespeople with 15+ years of collective expertise across residential, commercial, and industrial projects. Every professional is vetted, certified, and committed to excellence on the job site.", "textarea"},
+                new String[]{"about_advantage_quality_desc",  "We work only with premium, certified suppliers to source materials that meet international standards. Our rigorous procurement process and on-site quality control ensure that everything we build is durable, safe, and built to last for generations.", "textarea"},
+                new String[]{"about_advantage_delivery_desc", "We understand that time is money. Our project managers use proven scheduling frameworks to keep every build on track, with real-time progress reporting so clients always know where their project stands. We have a 98% on-time delivery record.", "textarea"},
+                new String[]{"about_stat_ontime_rate",         "98%",  "text"},
+                new String[]{"about_stat_projects_completed",  "500+", "text"},
+                new String[]{"about_stat_happy_clients",       "200+", "text"},
+                new String[]{"about_stat_years_experience",    "15+",  "text"},
+                new String[]{"about_cta_title", "Ready to Start Your Project?", "text"},
+                new String[]{"about_cta_text",  "Whether it's a new home, a commercial build, or a major renovation — our team is ready to bring your vision to life. Get in touch today for a free, no-obligation quote.", "textarea"}
         );
 
         for (String[] row : settings) {

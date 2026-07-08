@@ -468,6 +468,22 @@
 
             </div><!-- /row details -->
 
+            <div class="section-divider"></div>
+            <p class="section-title"><i class="fa-brands fa-youtube me-1" style="color: var(--orange);"></i>Project Video</p>
+
+            <div class="mb-1">
+              <label for="videoUrl" class="form-label">YouTube Video URL</label>
+              <input type="url"
+                     id="videoUrl"
+                     name="videoUrl"
+                     class="form-control"
+                     placeholder="e.g. https://www.youtube.com/watch?v=xxxxxxxxxxx"
+                     th:value="${project != null and project.videoUrl != null} ? ${project.videoUrl} : ''" />
+              <div class="form-text">
+                Paste a YouTube link (upload the video as "Unlisted" on YouTube first). It will play as an embedded video on the project's detail page. Leave blank for no video.
+              </div>
+            </div>
+
           </div><!-- /admin-card primary -->
 
         </div><!-- /col-lg-8 -->

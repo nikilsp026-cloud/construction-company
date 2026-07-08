@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="/css/main.css"/>
   <style>
         body { background:#f5f2eb; }
+        .admin-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .admin-card .card-header { background: transparent; border-bottom: 1px solid #e2e8f0; padding: 1rem 1.25rem; }
     </style>
 </head>
 <body class="admin-body">
@@ -26,14 +28,16 @@
             <i class="fas fa-check-circle me-2"></i><span th:text="${successMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Website Settings</h5>
-            </div>
-            <div class="card-body">
-                <form th:action="@{/admin/settings/save}" method="post">
+        <form th:action="@{/admin/settings/save}" method="post">
+
+            <!-- General & Contact -->
+            <div class="admin-card shadow-sm mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-building me-2"></i>General &amp; Contact</h6>
+                </div>
+                <div class="card-body p-4">
                     <div class="row g-3">
-                        <div class="col-12" th:each="s : ${allSettings}">
+                        <div class="col-12" th:each="s : ${allSettings.?[settingKey.startsWith('site_') or settingKey.startsWith('contact_')]}">
                             <div class="mb-2">
                                 <label class="form-label fw-semibold" th:text="${s.settingKey.replace('_', ' ').toUpperCase()}"></label>
                                 <textarea th:if="${s.settingType == 'textarea'}"
@@ -49,14 +53,93 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-warning fw-bold px-4">
-                            <i class="fas fa-save me-2"></i>Save Settings
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+
+            <!-- Social Media Links -->
+            <div class="admin-card shadow-sm mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-share-nodes me-2"></i>Social Media Links</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12" th:each="s : ${allSettings.?[settingKey.endsWith('_url')]}">
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold" th:text="${s.settingKey.replace('_', ' ').toUpperCase()}"></label>
+                                <textarea th:if="${s.settingType == 'textarea'}"
+                                          class="form-control"
+                                          th:name="${s.settingKey}"
+                                          rows="3"
+                                          th:text="${s.settingValue}"></textarea>
+                                <input th:unless="${s.settingType == 'textarea'}"
+                                       type="text"
+                                       class="form-control"
+                                       th:name="${s.settingKey}"
+                                       th:value="${s.settingValue}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Homepage -->
+            <div class="admin-card shadow-sm mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-house me-2"></i>Homepage</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12" th:each="s : ${allSettings.?[settingKey.startsWith('hero_') or settingKey.startsWith('stat_') or settingKey.startsWith('trust_')]}">
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold" th:text="${s.settingKey.replace('_', ' ').toUpperCase()}"></label>
+                                <textarea th:if="${s.settingType == 'textarea'}"
+                                          class="form-control"
+                                          th:name="${s.settingKey}"
+                                          rows="3"
+                                          th:text="${s.settingValue}"></textarea>
+                                <input th:unless="${s.settingType == 'textarea'}"
+                                       type="text"
+                                       class="form-control"
+                                       th:name="${s.settingKey}"
+                                       th:value="${s.settingValue}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Page -->
+            <div class="admin-card shadow-sm mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-circle-info me-2"></i>About Page</h6>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12" th:each="s : ${allSettings.?[settingKey.startsWith('about_')]}">
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold" th:text="${s.settingKey.replace('_', ' ').toUpperCase()}"></label>
+                                <textarea th:if="${s.settingType == 'textarea'}"
+                                          class="form-control"
+                                          th:name="${s.settingKey}"
+                                          rows="3"
+                                          th:text="${s.settingValue}"></textarea>
+                                <input th:unless="${s.settingType == 'textarea'}"
+                                       type="text"
+                                       class="form-control"
+                                       th:name="${s.settingKey}"
+                                       th:value="${s.settingValue}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <button type="submit" class="btn btn-warning fw-bold px-4">
+                    <i class="fas fa-save me-2"></i>Save Settings
+                </button>
+            </div>
+        </form>
     </main>
   </div>
 </div>

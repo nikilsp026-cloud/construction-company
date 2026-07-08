@@ -10,12 +10,15 @@
 
       <!-- Column 1: Company info -->
       <div class="col-12 col-md-4">
-        <h5 class="fw-bold mb-3 text-orange">
-          <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">BuildMaster</span>
-        </h5>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <img src="/img/logo-mark.png" alt="" class="brand-mark-img" style="width:34px;height:auto;"/>
+          <h5 class="fw-bold mb-0 text-orange">
+            <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'">KV Construction</span>
+          </h5>
+        </div>
         <p class="text-white-50 mb-3"
-           th:text="${settings != null and settings['site_tagline'] != null} ? ${settings['site_tagline']} : 'Building Tomorrow, Today.'">
-          Building Tomorrow, Today.
+           th:text="${settings != null and settings['site_tagline'] != null} ? ${settings['site_tagline']} : 'Building Dreams, Delivering Excellence.'">
+          Building Dreams, Delivering Excellence.
         </p>
 
         <!-- Address -->
@@ -173,7 +176,7 @@
     <div class="container py-3 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2">
       <p class="mb-0 small text-white-50">
         &copy; 2025
-        <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">BuildMaster</span>.
+        <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'">KV Construction</span>.
         All rights reserved.
       </p>
       <p class="mb-0 small text-white-50">

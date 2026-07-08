@@ -65,6 +65,12 @@ public class DataLoader implements ApplicationRunner {
         // app to be usable at all, and are individually idempotent (checked by unique key).
         seedRoles();
         seedAdminUser();
+        // Website settings are sensible defaults/placeholders (not demo content), and each
+        // row is independently guarded by existsBySettingKey - so this stays unconditional
+        // and safe to run every boot. That also means any *new* setting key added to the
+        // list below (e.g. a new editable homepage stat) still gets inserted into an
+        // environment that was already seeded long ago, without touching existing values.
+        seedWebsiteSettings();
 
         if (!seedDemoContent) {
             log.info("Demo content seeding disabled (app.data.seed-demo-content=false).");
@@ -80,7 +86,6 @@ public class DataLoader implements ApplicationRunner {
         seedProjects();
         seedTestimonials();
         seedTeamMembers();
-        seedWebsiteSettings();
         markDemoDataSeeded();
     }
 
@@ -360,7 +365,14 @@ public class DataLoader implements ApplicationRunner {
                 new String[]{"about_text",        "KV Construction has been shaping skylines and communities for over three decades. We combine time-tested craftsmanship with modern technology to deliver projects that stand the test of time.",
                                                                                                                                      "textarea"},
                 new String[]{"hero_title",        "KV Construction",                                                        "text"},
-                new String[]{"hero_subtitle",     "Quality Construction, Excellence Delivered",                                      "text"}
+                new String[]{"hero_subtitle",     "Quality Construction, Excellence Delivered",                                      "text"},
+                new String[]{"stat_years_experience",     "10+",  "text"},
+                new String[]{"stat_projects_completed",   "900+", "text"},
+                new String[]{"stat_happy_clients",        "50+",  "text"},
+                new String[]{"stat_expert_professionals", "50+",  "text"},
+                new String[]{"stat_customer_support",     "24/7", "text"},
+                new String[]{"trust_partner_title",       "Trusted Construction Partner",     "text"},
+                new String[]{"trust_partner_text",        "Delivering quality you can trust", "text"}
         );
 
         for (String[] row : settings) {

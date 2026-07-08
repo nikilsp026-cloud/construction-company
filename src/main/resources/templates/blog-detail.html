@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${post != null and post.title != null} ? ${post.title} + ' — ' + ${settings != null and settings['site_name'] != null ? settings['site_name'] : 'BuildMaster'} : 'Blog — BuildMaster'">Blog — BuildMaster</title>
+  <title th:text="${post != null and post.title != null} ? ${post.title} + ' — ' + ${settings != null and settings['site_name'] != null ? settings['site_name'] : 'KV Construction'} : 'Blog — KV Construction'">Blog — KV Construction</title>
 
   <!-- Bootstrap 5.3 -->
   <link rel="stylesheet"
@@ -20,7 +20,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 
@@ -113,7 +113,7 @@
     .article-body blockquote {
       border-left: 4px solid var(--orange);
       padding: 10px 20px;
-      background: rgba(255,90,54, .06);
+      background: rgba(212,175,55,.08);
       border-radius: 0 6px 6px 0;
       margin: 1.5rem 0;
       color: #555;
@@ -146,9 +146,9 @@
       border-radius: 20px;
       font-size: .75rem;
       font-weight: 600;
-      background: rgba(255,90,54, .12);
+      background: rgba(212,175,55,.14);
       color: var(--orange);
-      border: 1px solid rgba(255,90,54, .35);
+      border: 1px solid rgba(212,175,55,.4);
       text-decoration: none;
       transition: background .2s, color .2s;
     }
@@ -159,7 +159,7 @@
 
     /* ---- Author box ---- */
     .author-box {
-      background: #f8f9fa;
+      background: #f5f2eb;
       border-left: 4px solid var(--orange);
       border-radius: 0 10px 10px 0;
       padding: 20px 22px;
@@ -255,7 +255,7 @@
     .recent-post-item .rp-placeholder {
       width: 64px;
       height: 52px;
-      background: linear-gradient(135deg, var(--navy), #243447);
+      background: linear-gradient(135deg, var(--navy), #0b1220);
       border-radius: 6px;
       flex-shrink: 0;
       display: flex;
@@ -355,7 +355,7 @@
               <img th:src="${post.thumbnail}" th:alt="${post.title}" loading="eager"/>
             </div>
             <div class="article-thumbnail" th:unless="${post.thumbnail != null and !post.thumbnail.isEmpty()}">
-              <img src="https://placehold.co/900x420/1a2332/f7941d?text=Article"
+              <img src="https://placehold.co/900x420/1f2937/d8b15b?text=Article"
                    th:alt="${post.title}" loading="eager"/>
             </div>
 
@@ -365,7 +365,7 @@
               <!-- Category badge -->
               <span th:if="${post.category != null and !post.category.isEmpty()}"
                     class="badge rounded-pill mb-3 fw-normal"
-                    style="background-color: rgba(255,90,54,.15); color: var(--orange); border: 1px solid rgba(255,90,54,.4); font-size: .75rem;"
+                    style="background-color: rgba(212,175,55,.15); color: var(--orange); border: 1px solid rgba(212,175,55,.4); font-size: .75rem;"
                     th:text="${post.category}">Category</span>
 
               <!-- Post title -->
@@ -493,7 +493,7 @@
                     <img th:src="${rp.thumbnail}" th:alt="${rp.title}" loading="lazy"/>
                   </div>
                   <div class="rp-placeholder" th:unless="${rp.thumbnail != null and !rp.thumbnail.isEmpty()}">
-                    <i class="fa-solid fa-newspaper small" style="color: rgba(255,90,54,.6);"></i>
+                    <i class="fa-solid fa-newspaper small" style="color: rgba(212,175,55,.6);"></i>
                   </div>
 
                   <!-- Title + date -->
@@ -525,7 +525,7 @@
 
             <!-- CTA sidebar banner -->
             <div class="sidebar-card shadow-sm text-center p-4"
-                 style="background: linear-gradient(135deg, var(--navy) 0%, #243447 100%);">
+                 style="background: linear-gradient(135deg, var(--navy) 0%, #0b1220 100%);">
               <i class="fa-solid fa-hard-hat fa-2x mb-3" style="color: var(--orange);"></i>
               <h6 class="text-white fw-bold mb-2">Ready to Build?</h6>
               <p class="text-white-50 small mb-3">

@@ -62,7 +62,7 @@ public class ProjectService {
 
     @Transactional(readOnly = true)
     public Optional<Project> findById(Long id) {
-        return projectRepository.findById(id);
+        return projectRepository.findByIdWithImages(id);
     }
 
     /**

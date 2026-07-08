@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Services' : 'BuildMaster - Services'">BuildMaster - Services</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Services' : 'KV Construction - Services'">KV Construction - Services</title>
 
   <!-- Bootstrap 5.3 CDN -->
   <link rel="stylesheet"
@@ -21,7 +21,7 @@
     <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -61,7 +61,7 @@
         <!-- Section heading -->
         <div class="text-center mb-5">
           <div class="section-title-line mx-auto"></div>
-          <h2 class="fw-bold" style="color: #1a2332;">What We Offer</h2>
+          <h2 class="fw-bold" style="color: var(--ink);">What We Offer</h2>
           <p class="text-muted mt-2 mx-auto" style="max-width: 560px;">
             Comprehensive construction services tailored to residential, commercial, and industrial needs.
           </p>
@@ -81,7 +81,7 @@
                 </div>
 
                 <!-- Title -->
-                <h4 class="fw-bold mb-3" style="color: #1a2332;"
+                <h4 class="fw-bold mb-3" style="color: var(--ink);"
                     th:text="${service.title != null} ? ${service.title} : 'Service'">
                   Service Title
                 </h4>

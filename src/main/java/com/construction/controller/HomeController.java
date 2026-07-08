@@ -15,6 +15,7 @@ public class HomeController {
     private final TestimonialService testimonialService;
     private final TeamMemberService teamMemberService;
     private final WebsiteSettingService websiteSettingService;
+    private final HomepageVideoService homepageVideoService;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -23,6 +24,7 @@ public class HomeController {
         model.addAttribute("testimonials", testimonialService.findActive());
         model.addAttribute("team", teamMemberService.findActive());
         model.addAttribute("settings", websiteSettingService.getAllAsMap());
+        model.addAttribute("homepageVideos", homepageVideoService.findActive());
         model.addAttribute("activePage", "home");
         return "index";
     }

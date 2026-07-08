@@ -1,5 +1,6 @@
 package com.construction.entity;
 
+import com.construction.util.VideoUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -60,6 +61,10 @@ public class Project {
     @Column(length = 500)
     private String thumbnail;
 
+    /** YouTube (or other embeddable) video URL for a project walkthrough */
+    @Column(name = "video_url", length = 500)
+    private String videoUrl;
+
     /** e.g. Residential, Commercial, Industrial, Infrastructure */
     @Column(length = 100)
     private String category;
@@ -83,6 +88,16 @@ public class Project {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    /**
+     * Derived, non-persisted getter: converts the stored YouTube URL into an
+     * embeddable player URL. Kept as a plain instance method (rather than a
+     * T(...) static call from the template) because Thymeleaf's SpEL
+     * evaluator forbids static-class access in several attribute contexts.
+     */
+    public String getVideoEmbedUrl() {
+        return VideoUtil.toEmbedUrl(videoUrl);
+    }
 
     public void addImage(ProjectImage image) {
         images.add(image);

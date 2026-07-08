@@ -98,6 +98,7 @@ public class ProjectService {
         existing.setCategory(p.getCategory());
         existing.setFeatured(p.isFeatured());
         existing.setCompletionPercentage(p.getCompletionPercentage());
+        existing.setVideoUrl(p.getVideoUrl() != null && p.getVideoUrl().isBlank() ? null : p.getVideoUrl());
         // Thumbnail handling: null = leave unchanged, "" = explicitly cleared
         // (via the "remove thumbnail" checkbox), non-blank = new value. The old
         // file (if replaced or cleared) is deleted here, using the entity this

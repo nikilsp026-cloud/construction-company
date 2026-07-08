@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Login' : 'BuildMaster - Login'">BuildMaster - Login</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Login' : 'KV Construction - Login'">KV Construction - Login</title>
 
   <!-- Bootstrap 5.3 CDN -->
   <link rel="stylesheet"
@@ -21,7 +21,7 @@
     <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -52,15 +52,15 @@
             <!-- Card header with brand -->
             <div class="card-header text-center">
               <div class="brand-icon">
-                <i class="fa-solid fa-helmet-safety"></i>
+                <img src="/img/logo-mark.png" alt="" style="width:34px;height:auto;"/>
               </div>
               <h2 class="text-white fw-bold fs-5 mb-1"
-                  th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">
-                BuildMaster
+                  th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'">
+                KV Construction
               </h2>
               <p class="text-white-50 small mb-0"
-                 th:text="${settings != null and settings['site_tagline'] != null} ? ${settings['site_tagline']} : 'Building Tomorrow, Today.'">
-                Building Tomorrow, Today.
+                 th:text="${settings != null and settings['site_tagline'] != null} ? ${settings['site_tagline']} : 'Building Dreams, Delivering Excellence.'">
+                Building Dreams, Delivering Excellence.
               </p>
             </div>
 

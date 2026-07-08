@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Home' : 'BuildMaster — Home'">BuildMaster — Home</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Home' : 'KV Construction — Home'">KV Construction — Home</title>
 
   <!-- Bootstrap 5.3 -->
   <link rel="stylesheet"
@@ -19,7 +19,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -30,68 +30,141 @@
   <div th:replace="~{fragments/navbar :: navbar}"></div>
 
   <!-- ===================== 1. HERO ===================== -->
-  <section class="hero-section">
-    <div class="container py-5">
-      <div class="row align-items-center">
-        <div class="col-lg-8 text-white">
+  <section class="hero-section-split"
+            th:with="fullTitle=${settings != null and settings['hero_title'] != null} ? ${settings['hero_title']} : 'KV Construction',
+                     firstWord=${fullTitle.contains(' ')} ? ${fullTitle.substring(0, fullTitle.indexOf(' '))} : ${fullTitle},
+                     restWords=${fullTitle.contains(' ')} ? ${fullTitle.substring(fullTitle.indexOf(' ') + 1)} : ''">
 
-          <span class="badge mb-3 px-3 py-2 fw-semibold"
-                style="background-color: rgba(255,90,54,.2); color: #ff5a36; border: 1px solid rgba(255,90,54,.4); font-size: .8rem; letter-spacing:.06em;">
-            <i class="fas fa-hard-hat me-1"></i>TRUSTED CONSTRUCTION PARTNER
-          </span>
+    <!-- Full-bleed diagonal-clipped image panel -->
+    <div class="hero-visual-bleed reveal reveal-delay-2">
+      <img src="/img/hero-villa.jpg"
+           alt="Modern luxury villa built by KV Construction" loading="lazy"/>
+    </div>
 
-          <h1 class="display-4 fw-black lh-sm mb-4"
-              th:text="${settings != null and settings['hero_title'] != null} ? ${settings['hero_title']} : 'Building Dreams Into Reality'">
-            Building Dreams Into Reality
-          </h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="hero-split-text reveal">
 
-          <p class="lead mb-5"
-             style="color: rgba(255,255,255,.75); max-width: 580px; line-height: 1.7;"
-             th:text="${settings != null and settings['hero_subtitle'] != null} ? ${settings['hero_subtitle']} : 'We deliver high-quality construction solutions — from residential homes to large commercial complexes — with precision, safety, and on-time completion.'">
-            We deliver high-quality construction solutions — from residential homes to large commercial complexes — with precision, safety, and on-time completion.
-          </p>
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <span class="hero-accent-line"></span>
+              <span class="text-uppercase fw-semibold small" style="color: var(--orange-dark); letter-spacing:.16em;">Building Your</span>
+            </div>
 
-          <div class="d-flex flex-wrap gap-3">
-            <a href="/projects"
-               class="btn btn-outline-light btn-lg fw-semibold px-4">
-              <i class="fas fa-building me-2"></i>View Projects
-            </a>
-            <a href="/quote"
-               class="btn btn-orange btn-lg fw-semibold px-4">
-              <i class="fas fa-file-alt me-2"></i>Get a Quote
-            </a>
-          </div>
+            <h1 class="hero-kicker-title mb-4">
+              <span class="accent" th:text="${firstWord}">KV</span>
+              <span th:if="${!restWords.isEmpty()}" th:text="${restWords}">Construction</span>
+            </h1>
 
+            <p class="lead mb-4"
+               style="color: var(--body); line-height: 1.7; font-size: 1.05rem;"
+               th:text="${settings != null and settings['hero_subtitle'] != null} ? ${settings['hero_subtitle']} : 'Quality Construction, Excellence Delivered'">
+              Quality Construction, Excellence Delivered
+            </p>
+
+            <div class="d-flex flex-wrap gap-3 mb-4">
+              <a href="/services"
+                 class="btn btn-orange btn-lg fw-semibold px-4">
+                <i class="fas fa-tools me-2"></i>Our Services
+              </a>
+              <a href="/projects"
+                 class="btn btn-outline-gold btn-lg fw-semibold px-4">
+                <i class="fas fa-building me-2"></i>View Projects
+              </a>
+            </div>
+
+            <!-- Credibility row: avatars + key stat -->
+            <div class="hero-trust-row mb-3">
+              <div class="trust-badge">
+                <div class="avatar-stack">
+                  <span class="avatar-count" style="background: var(--gradient-dark); color: #fff;"><i class="fas fa-user"></i></span>
+                  <span class="avatar-count" style="background: var(--gradient-dark); color: #fff;"><i class="fas fa-user"></i></span>
+                  <span class="avatar-count"><i class="fas fa-user"></i></span>
+                </div>
+                <div class="trust-text">
+                  <strong>Trusted by</strong>
+                  <span th:text="${settings != null and settings['stat_happy_clients'] != null} ? ${settings['stat_happy_clients']} : '50+'">50+</span> Happy Clients
+                </div>
+              </div>
+
+              <span class="hero-trust-divider"></span>
+
+              <div class="hero-trust-stat">
+                <div class="hero-trust-stat-number"
+                     th:text="${settings != null and settings['stat_projects_completed'] != null} ? ${settings['stat_projects_completed']} : '900+'">900+</div>
+                <div class="hero-trust-stat-label">Projects Completed</div>
+              </div>
+            </div>
+
+            <!-- Trust note -->
+            <div class="hero-trust-note">
+              <span class="hero-trust-note-icon"><i class="fa-solid fa-circle-check"></i></span>
+              <div>
+                <div class="hero-trust-note-title"
+                     th:text="${settings != null and settings['trust_partner_title'] != null} ? ${settings['trust_partner_title']} : 'Trusted Construction Partner'">Trusted Construction Partner</div>
+                <div class="hero-trust-note-text"
+                     th:text="${settings != null and settings['trust_partner_text'] != null} ? ${settings['trust_partner_text']} : 'Delivering quality you can trust'">Delivering quality you can trust</div>
+              </div>
+            </div>
+
+          </div><!-- /.hero-split-text -->
         </div><!-- /col -->
+        <div class="col-lg-6 d-none d-lg-block"></div>
       </div><!-- /row -->
     </div><!-- /container -->
   </section>
 
-  <!-- ===================== 2. STATS BAR ===================== -->
-  <section class="stats-bar py-5">
+  <!-- ===================== 2. STATS STRIP ===================== -->
+  <section class="pt-5 pb-6" style="padding-top: 3rem; padding-bottom: 5rem;">
     <div class="container">
-      <div class="row g-4 text-center">
+      <div class="stats-strip reveal">
+        <div class="row g-4">
 
-        <div class="col-6 col-md-3">
-          <div class="stat-number">500+</div>
-          <div class="stat-label mt-1">Projects Completed</div>
+          <div class="col-6 col-md-3">
+            <div class="stats-strip-item">
+              <span class="stats-strip-icon"><i class="fas fa-award"></i></span>
+              <div>
+                <div class="stats-strip-number"
+                     th:text="${settings != null and settings['stat_years_experience'] != null} ? ${settings['stat_years_experience']} : '10+'">10+</div>
+                <div class="stats-strip-label">Years Experience</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stats-strip-item">
+              <span class="stats-strip-icon"><i class="fas fa-building"></i></span>
+              <div>
+                <div class="stats-strip-number"
+                     th:text="${settings != null and settings['stat_projects_completed'] != null} ? ${settings['stat_projects_completed']} : '900+'">900+</div>
+                <div class="stats-strip-label">Projects Completed</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stats-strip-item">
+              <span class="stats-strip-icon"><i class="fas fa-user-tie"></i></span>
+              <div>
+                <div class="stats-strip-number"
+                     th:text="${settings != null and settings['stat_expert_professionals'] != null} ? ${settings['stat_expert_professionals']} : '50+'">50+</div>
+                <div class="stats-strip-label">Expert Professionals</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stats-strip-item">
+              <span class="stats-strip-icon"><i class="fas fa-headset"></i></span>
+              <div>
+                <div class="stats-strip-number"
+                     th:text="${settings != null and settings['stat_customer_support'] != null} ? ${settings['stat_customer_support']} : '24/7'">24/7</div>
+                <div class="stats-strip-label">Customer Support</div>
+              </div>
+            </div>
+          </div>
+
         </div>
-
-        <div class="col-6 col-md-3">
-          <div class="stat-number">200+</div>
-          <div class="stat-label mt-1">Happy Clients</div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="stat-number">15</div>
-          <div class="stat-label mt-1">Years Experience</div>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <div class="stat-number">50+</div>
-          <div class="stat-label mt-1">Team Members</div>
-        </div>
-
       </div>
     </div>
   </section>
@@ -152,7 +225,7 @@
   </section>
 
   <!-- ===================== 4. FEATURED PROJECTS ===================== -->
-  <section style="padding-top: 5rem; padding-bottom: 5rem; background-color: #f8f9fa;">
+  <section style="padding-top: 5rem; padding-bottom: 5rem; background-color: #f5f2eb;">
     <div class="container">
 
       <!-- Heading -->
@@ -185,7 +258,7 @@
                    th:alt="${project.name}"
                    loading="lazy"/>
               <img th:unless="${project.thumbnail != null and !project.thumbnail.isEmpty()}"
-                   src="https://placehold.co/600x400/1a2332/white?text=Project"
+                   src="https://placehold.co/600x400/1f2937/d8b15b?text=Project"
                    th:alt="${project.name}"
                    loading="lazy"/>
             </a>
@@ -196,7 +269,7 @@
               <div class="d-flex flex-wrap gap-2 mb-2">
                 <span th:if="${project.category != null and !project.category.isEmpty()}"
                       class="badge rounded-pill fw-normal small"
-                      style="background-color: rgba(255,90,54,.15); color: var(--orange); border: 1px solid rgba(255,90,54,.4);"
+                      style="background-color: rgba(212,175,55,.15); color: var(--orange); border: 1px solid rgba(212,175,55,.4);"
                       th:text="${project.category}">Category</span>
 
                 <span th:if="${project.status != null}"
@@ -308,7 +381,7 @@
   </section>
 
   <!-- ===================== 6. TEAM ===================== -->
-  <section style="padding-top: 5rem; padding-bottom: 5rem; background-color: #f8f9fa;">
+  <section style="padding-top: 5rem; padding-bottom: 5rem; background-color: #f5f2eb;">
     <div class="container">
 
       <!-- Heading -->
@@ -341,8 +414,8 @@
                  loading="lazy"/>
             <div th:unless="${member.photo != null and !member.photo.isEmpty()}"
                  class="d-flex align-items-center justify-content-center fw-bold text-white"
-                 style="height:240px; background: linear-gradient(135deg,#1a2332,#243447); font-size:3rem;">
-              <i class="fas fa-user-tie" style="color: rgba(255,90,54,.6);"></i>
+                 style="height:240px; background: linear-gradient(135deg,#111827,#0b1220); font-size:3rem;">
+              <i class="fas fa-user-tie" style="color: rgba(212,175,55,.6);"></i>
             </div>
 
             <div class="card-body p-3">

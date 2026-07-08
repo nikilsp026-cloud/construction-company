@@ -4,132 +4,112 @@
 
 <nav th:fragment="adminSidebar"
      class="admin-sidebar d-flex flex-column text-white"
-     style="width:250px; min-width:250px; min-height:100vh;
+     style="width:264px; min-width:264px; min-height:100vh;
             position:sticky; top:0; height:100vh; overflow-y:auto; flex-shrink:0;">
 
   <!-- Brand -->
   <a href="/admin/dashboard"
-     class="text-decoration-none text-white d-flex align-items-center gap-2 px-3 py-4
-            border-bottom border-secondary">
-    <div class="rounded d-flex align-items-center justify-content-center flex-shrink-0"
-         style="width:38px; height:38px; background: linear-gradient(135deg, var(--orange), var(--orange-dark));">
-      <i class="fas fa-hard-hat" style="font-size:1rem;"></i>
-    </div>
+     class="admin-sidebar-brand text-decoration-none text-white d-flex align-items-center gap-2 px-3 py-4">
+    <img src="/img/logo-mark.png" alt="" class="flex-shrink-0" style="width:32px; height:auto;"/>
     <div>
-      <div class="fw-bold lh-1" style="font-size:0.95rem;">BuildMaster</div>
-      <div class="lh-1 mt-1" style="font-size:0.7rem; color:#8ea3b8;">Admin Panel</div>
+      <div class="fw-bold lh-1" style="font-size:0.95rem;"
+           th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'">KV Construction</div>
+      <div class="lh-1 mt-1" style="font-size:0.68rem; color:var(--orange-light); letter-spacing:.06em; text-transform:uppercase;">Admin Panel</div>
     </div>
   </a>
 
   <!-- Navigation -->
-  <ul class="nav flex-column flex-grow-1 px-2 pt-3 pb-2" style="gap:2px; list-style:none;">
+  <div class="flex-grow-1 px-2 pt-3 pb-2">
 
-    <li>
-      <a href="/admin/dashboard"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-tachometer-alt fa-fw" style="width:18px;"></i>
-        <span>Dashboard</span>
-      </a>
-    </li>
+    <div class="admin-sidebar-label">Overview</div>
+    <ul class="nav flex-column" style="gap:2px; list-style:none;">
+      <li>
+        <a href="/admin/dashboard" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-tachometer-alt"></i></span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+    </ul>
 
-    <li>
-      <a href="/admin/projects"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-building fa-fw" style="width:18px;"></i>
-        <span>Projects</span>
-      </a>
-    </li>
+    <div class="admin-sidebar-label">Content</div>
+    <ul class="nav flex-column" style="gap:2px; list-style:none;">
+      <li>
+        <a href="/admin/projects" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-building"></i></span>
+          <span>Projects</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/services" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-cogs"></i></span>
+          <span>Services</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/blog" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-blog"></i></span>
+          <span>Blog</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/gallery" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-images"></i></span>
+          <span>Gallery</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/team" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-users"></i></span>
+          <span>Team</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/testimonials" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-star"></i></span>
+          <span>Testimonials</span>
+        </a>
+      </li>
+    </ul>
 
-    <li>
-      <a href="/admin/services"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-cogs fa-fw" style="width:18px;"></i>
-        <span>Services</span>
-      </a>
-    </li>
+    <div class="admin-sidebar-label">Engagement</div>
+    <ul class="nav flex-column" style="gap:2px; list-style:none;">
+      <li>
+        <a href="/admin/contacts" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-envelope"></i></span>
+          <span class="flex-grow-1">Contact Messages</span>
+          <span th:if="${unreadCount != null and unreadCount > 0}"
+                th:text="${unreadCount}"
+                class="badge rounded-pill"
+                style="background:#dc3545; font-size:0.68rem;"></span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin/quotes" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-file-invoice"></i></span>
+          <span>Quote Requests</span>
+        </a>
+      </li>
+    </ul>
 
-    <li>
-      <a href="/admin/blog"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-blog fa-fw" style="width:18px;"></i>
-        <span>Blog</span>
-      </a>
-    </li>
+    <div class="admin-sidebar-label">System</div>
+    <ul class="nav flex-column" style="gap:2px; list-style:none;">
+      <li>
+        <a href="/admin/settings" class="nav-link admin-sidebar-link">
+          <span class="admin-sidebar-icon"><i class="fas fa-sliders-h"></i></span>
+          <span>Settings</span>
+        </a>
+      </li>
+    </ul>
 
-    <li>
-      <a href="/admin/gallery"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-images fa-fw" style="width:18px;"></i>
-        <span>Gallery</span>
-      </a>
-    </li>
-
-    <li>
-      <a href="/admin/team"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-users fa-fw" style="width:18px;"></i>
-        <span>Team</span>
-      </a>
-    </li>
-
-    <li>
-      <a href="/admin/testimonials"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-star fa-fw" style="width:18px;"></i>
-        <span>Testimonials</span>
-      </a>
-    </li>
-
-    <li>
-      <a href="/admin/contacts"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-envelope fa-fw" style="width:18px;"></i>
-        <span class="flex-grow-1">Contact Messages</span>
-        <span th:if="${unreadCount != null and unreadCount > 0}"
-              th:text="${unreadCount}"
-              class="badge rounded-pill"
-              style="background:#dc3545; font-size:0.7rem;"></span>
-      </a>
-    </li>
-
-    <li>
-      <a href="/admin/quotes"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-file-invoice fa-fw" style="width:18px;"></i>
-        <span>Quote Requests</span>
-      </a>
-    </li>
-
-    <li>
-      <a href="/admin/settings"
-         class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-         style="font-size:0.9rem;">
-        <i class="fas fa-sliders-h fa-fw" style="width:18px;"></i>
-        <span>Settings</span>
-      </a>
-    </li>
-
-  </ul>
+  </div>
 
   <!-- Logout -->
-  <div class="px-2 pb-3 border-top border-secondary pt-2">
-    <a href="/logout"
-       class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-white"
-       style="font-size:0.9rem;">
-      <i class="fas fa-sign-out-alt fa-fw" style="width:18px;"></i>
+  <div class="admin-sidebar-footer px-2 pb-3 pt-2">
+    <a href="/logout" class="nav-link admin-sidebar-link">
+      <span class="admin-sidebar-icon"><i class="fas fa-sign-out-alt"></i></span>
       <span>Logout</span>
     </a>
   </div>
-
 
 </nav>
 

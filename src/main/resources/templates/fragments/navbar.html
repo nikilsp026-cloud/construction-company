@@ -3,30 +3,22 @@
 <body>
 
 <nav th:fragment="navbar"
-     class="site-navbar navbar navbar-expand-lg navbar-dark fixed-top">
+     class="site-navbar navbar navbar-expand-xl navbar-light fixed-top">
 
-  <div class="container">
+  <div class="container d-flex align-items-center justify-content-between position-relative">
 
     <!-- Brand -->
-    <a class="navbar-brand fw-bold fs-4" href="/">
-      <span class="text-orange">&#9632;</span>&nbsp;
-      <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'BuildMaster'">BuildMaster</span>
+    <a class="navbar-brand brand-mark py-0 me-0" href="/">
+      <img src="/img/logo-mark.png" alt="" class="brand-mark-img"/>
+      <span class="d-flex flex-column">
+        <span class="brand-wordmark" th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'">KV Construction</span>
+        <span class="brand-tagline">Construction &amp; Interior</span>
+      </span>
     </a>
 
-    <!-- Hamburger toggle -->
-    <button class="navbar-toggler border-0"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar"
-            aria-controls="mainNavbar"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Nav links -->
-    <div class="collapse navbar-collapse" id="mainNavbar">
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+    <!-- Nav links (collapses on mobile) -->
+    <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
+      <ul class="navbar-nav navbar-nav-center align-items-xl-center gap-xl-1">
 
         <li class="nav-item">
           <a class="nav-link px-2"
@@ -70,8 +62,8 @@
              href="/contact">Contact</a>
         </li>
 
-        <!-- Get a Quote — orange CTA button -->
-        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+        <!-- CTA shown inline in the collapsed mobile menu only -->
+        <li class="nav-item ms-xl-2 mt-2 mt-xl-0 d-xl-none">
           <a class="btn btn-orange btn-sm fw-semibold px-3 py-2"
              th:classappend="${activePage == 'quote'} ? 'active' : ''"
              href="/quote">
@@ -81,6 +73,25 @@
 
       </ul>
     </div><!-- /.collapse -->
+
+    <!-- Right side: CTA (desktop) + hamburger -->
+    <div class="d-flex align-items-center gap-2">
+      <a class="btn btn-orange btn-sm fw-semibold px-3 py-2 d-none d-xl-inline-flex align-items-center gap-2"
+         th:classappend="${activePage == 'quote'} ? 'active' : ''"
+         href="/quote">
+        Get a Quote <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+      <button class="navbar-toggler border-0"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#mainNavbar"
+              aria-controls="mainNavbar"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
 
   </div><!-- /.container -->
 

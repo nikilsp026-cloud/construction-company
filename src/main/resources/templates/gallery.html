@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Gallery' : 'BuildMaster — Gallery'">BuildMaster — Gallery</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Gallery' : 'KV Construction — Gallery'">KV Construction — Gallery</title>
 
   <!-- Bootstrap 5.3 -->
   <link rel="stylesheet"
@@ -19,7 +19,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <!-- Shared design system -->
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
@@ -103,7 +103,7 @@
                    th:alt="${item.title}"
                    loading="lazy"/>
               <img th:unless="${item.imageUrl != null and !item.imageUrl.isEmpty()}"
-                   src="https://placehold.co/600x400/1a2332/f7941d?text=Gallery"
+                   src="https://placehold.co/600x400/1f2937/d8b15b?text=Gallery"
                    th:alt="${item.title}"
                    loading="lazy"/>
 

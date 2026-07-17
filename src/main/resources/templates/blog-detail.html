@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${post != null and post.seoTitle != null and !post.seoTitle.isEmpty()} ? ${post.seoTitle} : (${post != null and post.title != null} ? ${post.title} + ' — ' + ${settings != null and settings['site_name'] != null ? settings['site_name'] : 'KV Construction'} : 'Blog — KV Construction')">Blog — KV Construction</title>
+  <title th:text="${post != null and post.seoTitle != null and !post.seoTitle.isEmpty()} ? ${post.seoTitle} : (${post != null and post.title != null} ? ${post.title} + ' — ' + ${settings != null and settings['site_name'] != null ? settings['site_name'] : 'KV Construction &amp; Interior'} : 'Blog — KV Construction &amp; Interior')">Blog — KV Construction &amp; Interior</title>
   <meta name="description"
         th:if="${post != null}"
         th:content="${post.seoDescription != null and !post.seoDescription.isEmpty()} ? ${post.seoDescription} : (${post.shortDescription != null and !post.shortDescription.isEmpty()} ? ${post.shortDescription} : ${post.title})"/>

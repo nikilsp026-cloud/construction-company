@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Login' : 'KV Construction - Login'">KV Construction - Login</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Login' : 'KV Construction &amp; Interior - Login'">KV Construction &amp; Interior - Login</title>
   <meta name="robots" content="noindex, nofollow"/>
 
   <!-- Bootstrap 5.3 CDN -->
@@ -56,8 +56,8 @@
                 <img src="/img/logo-mark.png" alt="" style="width:34px;height:auto;"/>
               </div>
               <h2 class="text-white fw-bold fs-5 mb-1"
-                  th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'">
-                KV Construction
+                  th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction &amp; Interior'">
+                KV Construction &amp; Interior
               </h2>
               <p class="text-white-50 small mb-0"
                  th:text="${settings != null and settings['site_tagline'] != null} ? ${settings['site_tagline']} : 'Building Dreams, Delivering Excellence.'">

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title th:text="${settings != null and settings['site_name'] != null ? (project != null ? project.name + ' | ' + settings['site_name'] : settings['site_name'] + ' - Project Detail') : 'KV Construction - Project Detail'}">KV Construction - Project Detail</title>
-  <meta name="description" th:content="${project != null} ? ${project.name} + ' - a ' + (${project.category != null} ? ${project.category} : 'construction') + ' project by ' + (${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction') + '.' : 'Project details.'" content="Project details."/>
+  <title th:text="${settings != null and settings['site_name'] != null ? (project != null ? project.name + ' | ' + settings['site_name'] : settings['site_name'] + ' - Project Detail') : 'KV Construction &amp; Interior - Project Detail'}">KV Construction &amp; Interior - Project Detail</title>
+  <meta name="description" th:content="${project != null} ? ${project.name} + ' - a ' + (${project.category != null} ? ${project.category} : 'construction') + ' project by ' + (${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction &amp; Interior') + '.' : 'Project details.'" content="Project details."/>
   <meta property="og:title" th:content="${project != null} ? ${project.name} : 'Project Detail'" content="Project Detail"/>
   <meta property="og:type" content="website"/>
   <meta property="og:image" th:content="${project != null and project.thumbnail != null and !project.thumbnail.isEmpty()} ? ${project.thumbnail} : '/img/hero-villa.jpg'" content="/img/hero-villa.jpg"/>

@@ -89,7 +89,7 @@ public class SecurityConfig {
                         + "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
                         + "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; "
                         + "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; "
-                        + "img-src 'self' data: https://placehold.co https://img.youtube.com; "
+                        + "img-src 'self' data: https://placehold.co https://img.youtube.com https://pub-f904b426a38242bda54842e804ecc451.r2.dev; "
                         + "frame-src https://maps.google.com https://www.google.com https://www.youtube.com https://youtube.com; "
                         + "object-src 'none'; "
                         + "base-uri 'self'; "

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Contact Us' : 'KV Construction — Contact Us'">KV Construction — Contact Us</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Contact Us' : 'KV Construction &amp; Interior — Contact Us'">KV Construction &amp; Interior — Contact Us</title>
   <meta name="description" content="Get in touch with our team for questions, project inquiries, or support."/>
   <meta property="og:title" content="Contact Us"/>
   <meta property="og:description" content="Get in touch with our team for questions, project inquiries, or support."/>
@@ -142,15 +142,18 @@
             <ul class="list-unstyled mb-0 small text-white-50">
               <li class="d-flex justify-content-between mb-1">
                 <span>Monday – Friday</span>
-                <span class="text-white">8:00 AM – 6:00 PM</span>
+                <span class="text-white"
+                      th:text="${settings != null and settings['contact_hours_weekday'] != null and !settings['contact_hours_weekday'].isEmpty()} ? ${settings['contact_hours_weekday']} : '8:00 AM – 6:00 PM'">8:00 AM – 6:00 PM</span>
               </li>
               <li class="d-flex justify-content-between mb-1">
                 <span>Saturday</span>
-                <span class="text-white">9:00 AM – 4:00 PM</span>
+                <span class="text-white"
+                      th:text="${settings != null and settings['contact_hours_saturday'] != null and !settings['contact_hours_saturday'].isEmpty()} ? ${settings['contact_hours_saturday']} : '9:00 AM – 4:00 PM'">9:00 AM – 4:00 PM</span>
               </li>
               <li class="d-flex justify-content-between">
                 <span>Sunday</span>
-                <span class="text-white-50">Closed</span>
+                <span class="text-white-50"
+                      th:text="${settings != null and settings['contact_hours_sunday'] != null and !settings['contact_hours_sunday'].isEmpty()} ? ${settings['contact_hours_sunday']} : 'Closed'">Closed</span>
               </li>
             </ul>
           </div>
@@ -299,16 +302,17 @@
 
   <!-- ===================== MAP ===================== -->
   <section class="py-0" style="height: 340px; position: relative; overflow: hidden;">
-    <iframe src="https://maps.google.com/maps?q=KV+Construction+and+Interior@14.4471846,75.935732&z=17&output=embed"
+    <iframe th:src="${settings != null and settings['contact_map_embed'] != null and !settings['contact_map_embed'].isEmpty()} ? ${settings['contact_map_embed']} : 'https://maps.google.com/maps?q=KV+Construction+and+Interior@14.4471846,75.935732&z=17&output=embed'"
+            src="https://maps.google.com/maps?q=KV+Construction+and+Interior@14.4471846,75.935732&z=17&output=embed"
             width="100%" height="340"
             style="border:0; display:block;"
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
-            title="KV Construction and Interior — our location on the map">
+            title="Our location on the map">
     </iframe>
     <div style="position:absolute; top:44%; left:50%; transform:translate(-50%,-100%); pointer-events:none; z-index:5;">
       <span style="background:#c89b3c; color:#111827; font-weight:700; font-size:14px; padding:8px 16px; border-radius:8px; white-space:nowrap; box-shadow:0 6px 16px rgba(0,0,0,.3); display:inline-block; position:relative; font-family:'Inter',sans-serif;">
-        KV Construction and Interior
+        <span th:text="${settings != null and settings['contact_map_label'] != null and !settings['contact_map_label'].isEmpty()} ? ${settings['contact_map_label']} : 'KV Construction and Interior'">KV Construction and Interior</span>
         <span style="position:absolute; left:50%; bottom:-6px; transform:translateX(-50%); width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:7px solid #c89b3c;"></span>
       </span>
     </div>

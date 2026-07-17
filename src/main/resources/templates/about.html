@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — About Us' : 'KV Construction — About Us'">KV Construction — About Us</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — About Us' : 'KV Construction &amp; Interior — About Us'">KV Construction &amp; Interior — About Us</title>
   <meta name="description" content="Learn about our story, core values, and the team behind our construction and interior design projects - trusted by hundreds of clients."/>
   <meta property="og:title" content="About Us"/>
   <meta property="og:description" content="Learn about our story, core values, and the team behind our construction and interior design projects - trusted by hundreds of clients."/>
@@ -66,7 +66,7 @@
 
           <p class="text-uppercase fw-semibold small mb-1" style="color: var(--orange); letter-spacing:.1em;">Our Story</p>
           <h2 class="section-title mb-0">
-            <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'">KV Construction</span>
+            <span th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction &amp; Interior'">KV Construction &amp; Interior</span>
           </h2>
           <div class="section-divider"></div>
 

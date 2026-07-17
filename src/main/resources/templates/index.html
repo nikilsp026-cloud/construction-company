@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Home' : 'KV Construction — Home'">KV Construction — Home</title>
+  <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Home' : 'KV Construction &amp; Interior — Home'">KV Construction &amp; Interior — Home</title>
   <meta name="description" content="Premium construction and interior design services - residential, commercial, and industrial projects delivered with quality craftsmanship and on-time reliability."/>
-  <meta property="og:title" th:content="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction'" content="KV Construction"/>
+  <meta property="og:title" th:content="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} : 'KV Construction &amp; Interior'" content="KV Construction &amp; Interior"/>
   <meta property="og:description" content="Premium construction and interior design services - residential, commercial, and industrial projects delivered with quality craftsmanship and on-time reliability."/>
   <meta property="og:type" content="website"/>
   <meta property="og:image" content="/img/hero-villa.jpg"/>
@@ -36,14 +36,14 @@
 
   <!-- ===================== 1. HERO ===================== -->
   <section class="hero-section-split"
-            th:with="fullTitle=${settings != null and settings['hero_title'] != null} ? ${settings['hero_title']} : 'KV Construction',
+            th:with="fullTitle=${settings != null and settings['hero_title'] != null} ? ${settings['hero_title']} : 'KV Construction &amp; Interior',
                      firstWord=${fullTitle.contains(' ')} ? ${fullTitle.substring(0, fullTitle.indexOf(' '))} : ${fullTitle},
                      restWords=${fullTitle.contains(' ')} ? ${fullTitle.substring(fullTitle.indexOf(' ') + 1)} : ''">
 
     <!-- Full-bleed diagonal-clipped image panel -->
     <div class="hero-visual-bleed reveal reveal-delay-2">
       <img src="/img/hero-villa.jpg"
-           alt="Modern luxury villa built by KV Construction" loading="lazy"/>
+           alt="Modern luxury villa built by KV Construction &amp; Interior" loading="lazy"/>
     </div>
 
     <div class="container">

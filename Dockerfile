@@ -1,5 +1,5 @@
 # =========================================================
-# Multi-stage Dockerfile — KV Construction App
+# Multi-stage Dockerfile — KV Construction & Interior App
 # Stage 1: build the fat JAR with Maven
 # Stage 2: run the JAR on a slim JRE image
 # =========================================================

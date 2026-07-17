@@ -1,8 +1,11 @@
 package com.construction.exception;
 
+import io.sentry.Sentry;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -81,6 +85,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IOException.class, MultipartException.class})
     public String handleFileError(Exception ex, HttpServletRequest request, RedirectAttributes ra) {
         log.error("File handling error on {}", request.getRequestURI(), ex);
+        Sentry.captureException(ex);
         ra.addFlashAttribute("errorMessage", "We couldn't process the uploaded file. Please check the file and try again.");
         return safeRedirectTarget(request);
     }
@@ -92,6 +97,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public String handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request, RedirectAttributes ra) {
         log.error("Data integrity violation on {}", request.getRequestURI(), ex);
+        Sentry.captureException(ex);
         ra.addFlashAttribute("errorMessage", "This action couldn't be completed because the record is still linked to other data, or a required field was missing.");
         return safeRedirectTarget(request);
     }
@@ -118,12 +124,23 @@ public class GlobalExceptionHandler {
     }
 
     // -------------------------------------------------------------------
+    // Missing static resource (favicon.ico, stray browser/crawler probes).
+    // Benign and extremely frequent - not worth ERROR-level log noise.
+    // -------------------------------------------------------------------
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Void> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+        log.debug("No static resource for {}", request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    // -------------------------------------------------------------------
     // Catch-all - guarantees the Whitelabel Error Page is never shown for
     // any exception raised inside a controller.
     // -------------------------------------------------------------------
     @ExceptionHandler(Exception.class)
     public String handleUnexpected(Exception ex, HttpServletRequest request, RedirectAttributes ra) {
         log.error("Unexpected error handling {} {}", request.getMethod(), request.getRequestURI(), ex);
+        Sentry.captureException(ex);
         ra.addFlashAttribute("errorMessage", "Something went wrong on our end. Please try again, and contact support if the problem continues.");
         return safeRedirectTarget(request);
     }

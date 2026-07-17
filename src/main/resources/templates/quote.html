@@ -4,6 +4,11 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' — Get a Free Quote' : 'KV Construction — Get a Free Quote'">KV Construction — Get a Free Quote</title>
+  <meta name="description" content="Request a free, no-obligation quote for your next construction or interior design project."/>
+  <meta property="og:title" content="Get a Free Quote"/>
+  <meta property="og:description" content="Request a free, no-obligation quote for your next construction or interior design project."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:image" content="/img/hero-villa.jpg"/>
 
   <!-- Bootstrap 5.3 -->
   <link rel="stylesheet"
@@ -106,6 +111,11 @@
           </div>
 
           <form th:action="@{/quote}" th:object="${quote}" method="post" novalidate>
+
+            <!-- Spam trap: invisible to real users, often auto-filled by bots -->
+            <input type="text" name="website" value="" tabindex="-1" autocomplete="off"
+                   aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" />
+            <input type="hidden" name="formRenderedAt" th:value="${formRenderedAt}" />
 
             <!-- ===== Section 1: Your Information ===== -->
             <div class="d-flex align-items-center gap-2 mb-3">

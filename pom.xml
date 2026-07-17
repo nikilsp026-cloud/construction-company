@@ -105,6 +105,23 @@
             <version>2.29.52</version>
         </dependency>
 
+        <!-- Thumbnailator: downsizes/compresses uploaded images before they go
+             to R2, so a multi-MB phone photo doesn't get served at full size
+             to every site visitor. -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.20</version>
+        </dependency>
+
+        <!-- Sentry: error monitoring, alerts on prod exceptions instead of
+             only being discoverable via raw logs or a user complaint. -->
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
+            <version>7.14.0</version>
+        </dependency>
+
         <!-- Apache Commons Lang (string/object utilities) -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -132,6 +149,14 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- In-memory DB for tests only - keeps tests fast, isolated, and never
+             touching the real Neon database. -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
 

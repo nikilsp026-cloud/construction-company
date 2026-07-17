@@ -2,6 +2,7 @@ package com.construction.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Set;
@@ -32,6 +34,12 @@ public class FileStorageService {
             "image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"
     );
     private static final long MAX_FILE_SIZE_BYTES = 10L * 1024 * 1024; // 10 MB
+    private static final int MAX_DIMENSION = 1600; // px, longest side
+    // GIF (animation) and WebP have no built-in Java ImageIO reader/writer,
+    // so they're uploaded as-is rather than resized/recompressed.
+    private static final Set<String> RESIZABLE_CONTENT_TYPES = Set.of(
+            "image/png", "image/jpeg", "image/jpg"
+    );
 
     @Value("${app.r2.account-id}")
     private String accountId;
@@ -83,18 +91,45 @@ public class FileStorageService {
         // subDir is developer-controlled ("images"/"docs"), never derived from user input.
         String key = subDir + "/" + uniqueName;
 
+        byte[] bytes = RESIZABLE_CONTENT_TYPES.contains(contentType.toLowerCase())
+                ? resizeAndCompress(file, contentType)
+                : file.getBytes();
+
         s3Client.putObject(
                 PutObjectRequest.builder()
                         .bucket(bucket)
                         .key(key)
                         .contentType(contentType)
                         .build(),
-                RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+                RequestBody.fromBytes(bytes)
         );
 
         String url = publicUrl.replaceAll("/$", "") + "/" + key;
-        log.info("Uploaded file '{}' -> '{}'", originalFilename, url);
+        log.info("Uploaded file '{}' ({} bytes) -> '{}'", originalFilename, bytes.length, url);
         return url;
+    }
+
+    /**
+     * Downscales to at most {@link #MAX_DIMENSION}px on the longest side and
+     * re-encodes with moderate compression, so a multi-MB phone photo isn't
+     * served at full size to every visitor. Never upscales smaller images.
+     * Falls back to the original bytes if the image can't be decoded, so a
+     * malformed/unusual file doesn't block the whole upload.
+     */
+    private byte[] resizeAndCompress(MultipartFile file, String contentType) throws IOException {
+        String formatName = contentType.equalsIgnoreCase("image/png") ? "png" : "jpg";
+        try (var in = file.getInputStream()) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            Thumbnails.of(in)
+                    .size(MAX_DIMENSION, MAX_DIMENSION)
+                    .outputFormat(formatName)
+                    .outputQuality(0.82)
+                    .toOutputStream(out);
+            return out.toByteArray();
+        } catch (Exception e) {
+            log.warn("Could not resize image '{}', uploading original: {}", file.getOriginalFilename(), e.getMessage());
+            return file.getBytes();
+        }
     }
 
     public void deleteFile(String url) {

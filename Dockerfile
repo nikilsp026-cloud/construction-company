@@ -40,14 +40,15 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
 
-# Koyeb sets SPRING_PROFILES_ACTIVE=prod via environment variable
+# The platform sets SPRING_PROFILES_ACTIVE=prod via environment variable.
 #
-# NOTE ON FILE UPLOADS: the /app/uploads directory below lives on the
-# container's local, ephemeral filesystem. On most PaaS platforms (Koyeb
-# included) this is wiped on every redeploy/restart/scale event, so uploaded
-# images and documents will be lost. For production, mount a persistent
-# volume at /app/uploads or switch FileStorageService to an object store
-# (e.g. S3-compatible storage) - see the accompanying report for details.
+# NOTE ON FILE UPLOADS: uploaded images go to Cloudflare R2 (S3-compatible
+# object storage), not local disk - see FileStorageService. This is required
+# because the container's local filesystem is ephemeral on most PaaS
+# platforms (Render, Koyeb, etc.) and gets wiped on every redeploy/restart.
+# The /app/uploads directory created above is now unused by the app itself;
+# it's left in place only because WebConfig still maps /uploads/** to it for
+# backward compatibility with any pre-R2 local files that may still exist.
 ENTRYPOINT ["java", \
             "-XX:MaxRAMPercentage=75.0", \
             "-Djava.security.egd=file:/dev/./urandom", \

@@ -5,15 +5,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Uploads images to Cloudflare R2 (S3-compatible object storage) rather than
+ * the container's local disk. Local disk on Render/Koyeb/most PaaS platforms
+ * is ephemeral and gets wiped on every redeploy/restart, which was silently
+ * losing every previously uploaded image - R2 survives that.
+ */
 @Slf4j
 @Service
 public class FileStorageService {
@@ -23,14 +33,32 @@ public class FileStorageService {
     );
     private static final long MAX_FILE_SIZE_BYTES = 10L * 1024 * 1024; // 10 MB
 
-    @Value("${app.upload.dir:./uploads}")
-    private String uploadDir;
+    @Value("${app.r2.account-id}")
+    private String accountId;
+
+    @Value("${app.r2.access-key}")
+    private String accessKey;
+
+    @Value("${app.r2.secret-key}")
+    private String secretKey;
+
+    @Value("${app.r2.bucket}")
+    private String bucket;
+
+    @Value("${app.r2.public-url}")
+    private String publicUrl;
+
+    private S3Client s3Client;
 
     @PostConstruct
-    public void init() throws IOException {
-        Files.createDirectories(Paths.get(uploadDir, "images"));
-        Files.createDirectories(Paths.get(uploadDir, "docs"));
-        log.info("File storage initialised at '{}'", Paths.get(uploadDir).toAbsolutePath());
+    public void init() {
+        s3Client = S3Client.builder()
+                .endpointOverride(URI.create("https://" + accountId + ".r2.cloudflarestorage.com"))
+                // R2 does not use AWS regions, but the SDK requires a value - "auto" is R2's documented placeholder.
+                .region(Region.of("auto"))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+                .build();
+        log.info("R2 file storage initialised for bucket '{}'", bucket);
     }
 
     public String saveImage(MultipartFile file, String subDir) throws IOException {
@@ -50,48 +78,43 @@ public class FileStorageService {
         String extension = (originalFilename != null && originalFilename.contains("."))
                 ? originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase()
                 : "";
-        // Never trust the client-supplied filename for the path itself - only its extension.
+        // Never trust the client-supplied filename for the key itself - only its extension.
         String uniqueName = UUID.randomUUID() + extension;
+        // subDir is developer-controlled ("images"/"docs"), never derived from user input.
+        String key = subDir + "/" + uniqueName;
 
-        // subDir is developer-controlled ("images"/"docs"), never derived from user input,
-        // so no path-traversal risk here - but we still normalize defensively.
-        Path baseDir = Paths.get(uploadDir).toAbsolutePath().normalize();
-        Path target = baseDir.resolve(subDir).resolve(uniqueName).normalize();
-        if (!target.startsWith(baseDir)) {
-            throw new IllegalArgumentException("Invalid upload destination.");
-        }
+        s3Client.putObject(
+                PutObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .contentType(contentType)
+                        .build(),
+                RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+        );
 
-        Files.createDirectories(target.getParent());
-        try (var in = file.getInputStream()) {
-            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        log.info("Stored uploaded file '{}' -> '{}'", originalFilename, target);
-        return "/uploads/" + subDir + "/" + uniqueName;
+        String url = publicUrl.replaceAll("/$", "") + "/" + key;
+        log.info("Uploaded file '{}' -> '{}'", originalFilename, url);
+        return url;
     }
 
-    public void deleteFile(String relativePath) {
-        if (relativePath == null || relativePath.isBlank()) {
+    public void deleteFile(String url) {
+        if (url == null || url.isBlank()) {
             return;
         }
+        String prefix = publicUrl.replaceAll("/$", "") + "/";
+        if (!url.startsWith(prefix)) {
+            log.debug("Skipping delete for '{}': not an R2-hosted file", url);
+            return;
+        }
+        String key = url.substring(prefix.length());
         try {
-            Path baseDir = Paths.get(uploadDir).toAbsolutePath().normalize();
-            Path full = baseDir.resolve(relativePath.replaceFirst("^/uploads/", "")).normalize();
-            if (!full.startsWith(baseDir)) {
-                log.warn("Refusing to delete file outside upload directory: '{}'", relativePath);
-                return;
-            }
-            boolean deleted = Files.deleteIfExists(full);
-            if (deleted) {
-                log.debug("Deleted file '{}'", full);
-            } else {
-                log.debug("File '{}' was already absent, nothing to delete", full);
-            }
-        } catch (IOException e) {
+            s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucket).key(key).build());
+            log.debug("Deleted R2 object '{}'", key);
+        } catch (Exception e) {
             // Not fatal: the DB record is still updated/removed even if the physical
-            // file couldn't be deleted (e.g. permissions, already gone). Log it so
-            // it's visible in monitoring instead of silently vanishing.
-            log.warn("Could not delete file '{}': {}", relativePath, e.getMessage());
+            // file couldn't be deleted. Log it so it's visible in monitoring instead
+            // of silently vanishing.
+            log.warn("Could not delete R2 object '{}': {}", key, e.getMessage());
         }
     }
 }

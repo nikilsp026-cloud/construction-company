@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title th:text="${settings != null and settings['site_name'] != null} ? ${settings['site_name']} + ' - Login' : 'KV Construction - Login'">KV Construction - Login</title>
+  <meta name="robots" content="noindex, nofollow"/>
 
   <!-- Bootstrap 5.3 CDN -->
   <link rel="stylesheet"
@@ -142,6 +143,7 @@
                       Remember me
                     </label>
                   </div>
+                  <a href="/forgot-password" class="small text-decoration-none" style="color: var(--orange);">Forgot password?</a>
                 </div>
 
                 <!-- Submit -->
